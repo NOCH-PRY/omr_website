@@ -1,0 +1,96 @@
+.site-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px clamp(20px, 4vw, 44px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.06);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  color: #111827;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 56px;
+  height: 54px;
+  /* border-radius: 999px; */
+  background: url("../../assets/omr_logo.png") center/cover no-repeat;
+  color: #31402b;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.site-link {
+  color: #475569;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.site-link:hover,
+.site-link.active {
+  color: #1f8a4a;
+}
+
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #1f8a4a;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.nav-button:hover {
+  background: #166735;
+  transform: translateY(-1px);
+}
+
+.site-main {
+  flex: 1;
+}
+
+@media (max-width: 880px) {
+  .site-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .site-nav {
+    width: 100%;
+    justify-content: center;
+  }
+}
