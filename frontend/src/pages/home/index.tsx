@@ -1,5 +1,6 @@
 import * as React from "react";
 import "./index.css";
+import ScrollDownButton from "../../components/ui/ScrollDownButton";
 import svgPaths from "../../assets/svgPaths";
 import imgHeader30 from "../../assets/OMR NK Night.jpg";
 import imgLogo from "../../assets/408865defdfab9215eeef255bd913a337a0f5d17.png";
@@ -10,11 +11,11 @@ import imgImg2 from "../../assets/f836639070fc355b277d5ef756dc55d36e00e033.png";
 import imgGlossImg from "../../assets/0ce1fe27adca01f73944d6aa09182cb6c330eabf.png";
 import imgOneMoreTk from "../../assets/a087356a741220083157910ca0ce8ab382637749.png";
 import imgMenu from "../../assets/57ff4087a0968c3b023feea1fec5b9ce1eb56605.png";
-import imgFrame909 from "../../assets/a6f8b68c9a591bbc4514052a48aeda53f50e0c57.png";
-import imgFrame905 from "../../assets/22a88af81155ece53c631c751d57298636a7fb21.png";
-import imgFrame906 from "../../assets/d02a5a8d5050da4441097c2934c198d1e9e91f80.png";
-import imgFrame907 from "../../assets/d8004f0c95a5e40b1073d39ef7fbff088eae683a.png";
-import imgFrame908 from "../../assets/00640bcc71547978128b34924214fbcd00d5619e.png";
+import imgFrame909 from "../../assets/Food/Breakfast/pork-rice.png";
+import imgFrame905 from "../../assets/Food/Breakfast/pork-blood-porridge.png";
+import imgFrame906 from "../../assets/Food/Breakfast/khmer-noodle-soup.png";
+import imgFrame907 from "../../assets/Food/Breakfast/pork-bone-soup.png";
+import imgFrame908 from "../../assets/Food/Breakfast/pork-rice.png";
 import imgRectangle36 from "../../assets/b9d0b7da2a791dba9bfd5ed8c192934e5b09e187.png";
 import imgFrame42847 from "../../assets/1382982e510b269b331ab664ebed0c6f1fdffd58.png";
 import imgFrame42848 from "../../assets/0bf56424fd443f823cf6e6d40a85c12bbd63e53e.png";
@@ -157,20 +158,22 @@ function Header() {
         </div>
       </div>
 
-      {/* Decorative scroll indicator */}
-      <a className="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-70">
-        <svg width="24" height="24" fill="none" viewBox="0 0 23.8932 23.8932" className="rotate-[133deg]">
-          <path d={svgPaths.p3906f400} stroke="#FAD795" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.888889" />
-        </svg>
-      </a>
+      {/* Scroll indicator */}
+      <ScrollDownButton targetId="signature-section" />
     </header>
   );
 }
 
 function SignatureTitle() {
   return (
-    <div className="bg-[#304625] w-full py-10 flex items-center justify-center">
-      <h2 className="text-[#fafaf9] text-3xl sm:text-4xl lg:text-[32px] leading-tight underline text-center" style={{ fontFamily: "'Gloock', serif" }}>
+    <div
+      id="signature-section"
+      className="bg-[#304625] w-full py-10 flex items-center justify-center"
+    >
+      <h2
+        className="text-[#fafaf9] text-3xl sm:text-4xl lg:text-[32px] leading-tight underline text-center"
+        style={{ fontFamily: "'Gloock', serif" }}
+      >
         Our Signature Dishes
       </h2>
     </div>
