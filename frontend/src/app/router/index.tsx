@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { appConfig } from "../../config/appConfig";
-import { routeDefinitions } from "./routeConfig.tsx";
+import { routeDefinitions } from "./routeConfig";
 
 export default function AppRouter() {
   return (
@@ -9,7 +9,7 @@ export default function AppRouter() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           {routeDefinitions.map((route) =>
-            route.path === "/" ? (
+            route.index ? (
               <Route index element={route.element} key="home" />
             ) : (
               <Route
@@ -17,7 +17,7 @@ export default function AppRouter() {
                 element={route.element}
                 key={route.path}
               />
-            ),
+            )
           )}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
