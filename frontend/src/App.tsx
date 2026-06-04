@@ -1,8 +1,13 @@
-import AppRouter from "./app/router";
-import "./App.css";
+import { Toaster } from 'sonner';
+import RestaurantWebsite from './components/RestaurantPage';
+import ScrollToTop from './components/ScrollToTop';
 
-function App() {
-  return <AppRouter />;
+export default function App() {
+  return (
+    <div className="min-h-screen bg-white">
+      <Toaster position="top-right" richColors />
+      <RestaurantWebsite />
+      <ScrollToTop />
+    </div>
+  );
 }
-
-export default App;

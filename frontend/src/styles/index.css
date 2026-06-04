@@ -1,3 +1,21 @@
+@import "tailwindcss";
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+
+
+:root {
+  --color-brand-dark: #304625;
+  --color-brand-primary: #426232;
+  --color-brand-light: #6b9158;
+  --color-brand-accent: #8bb974;
+  --color-brand-sage: #cce9be;
+  --color-brand-gold: #e3a56b;
+  --color-brand-sand: #fad795;
+  --color-brand-cream: #fafaf9;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
