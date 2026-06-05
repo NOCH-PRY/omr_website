@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import svgPaths from "../assets/svgPaths";
 import imgHeader30 from "../assets/omr_bk_night.jpg";
 import imgLogo from "../assets/logo_white_color.png";
@@ -119,6 +120,7 @@ function QuoteIcon({ d }: { d: string }) {
 }
 
 function Header() {
+  const navigate = useNavigate();
   return (
     <header className="relative w-full overflow-hidden shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]" style={{ minHeight: "100vh" }}>
       {/* Background */}
@@ -136,7 +138,11 @@ function Header() {
           <a href="#about" className="hover:text-[#8bb974] transition-colors">About us</a>
           <a href="#gallery" className="hover:text-[#8bb974] transition-colors">Gallery</a>
         </div>
-        <button className="border border-[#6b9158] text-[#8bb974] text-xs px-4 py-2 rounded-full hover:bg-[#6b9158] hover:text-white transition-colors cursor-pointer" style={{ fontFamily: "'Geologica', sans-serif" }}>
+        <button 
+          onClick={() => navigate("/reservation")}
+          className="border border-[#6b9158] text-[#8bb974] text-xs px-4 py-2 rounded-full hover:bg-[#6b9158] hover:text-white transition-colors cursor-pointer" 
+          style={{ fontFamily: "'Geologica', sans-serif" }}
+        >
           Reservation
         </button>
       </nav>
@@ -153,7 +159,12 @@ function Header() {
           <a href="#menu" className="bg-[#8bb974] text-white text-xs px-6 py-3 rounded-full hover:bg-[#6b9158] transition-colors cursor-pointer" style={{ fontFamily: "'Geologica', sans-serif" }}>
             Explore our menu
           </a>
-          <a href="#Reservation" className="border-2 border-[#cce9be] text-[#8bb974] text-xs px-6 py-3 rounded-full hover:bg-[#cce9be]/20 transition-colors cursor-pointer" style={{ fontFamily: "'Geologica', sans-serif" }}>
+          <a 
+            href="/reservation" 
+            onClick={(e) => { e.preventDefault(); navigate("/reservation"); }}
+            className="border-2 border-[#cce9be] text-[#8bb974] text-xs px-6 py-3 rounded-full hover:bg-[#cce9be]/20 transition-colors cursor-pointer" 
+            style={{ fontFamily: "'Geologica', sans-serif" }}
+          >
             Book Your Dining
           </a>
         </div>
@@ -222,6 +233,7 @@ function ReservationTitle() {
 }
 
 function ReservationCard({ isFirst }: { isFirst: boolean }) {
+  const navigate = useNavigate();
   const details = isFirst
     ? {
       branch: "Toul Kork",
@@ -253,7 +265,11 @@ function ReservationCard({ isFirst }: { isFirst: boolean }) {
       </div>
       {/* Reserve button */}
       <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-[80%] max-w-70">
-        <button className="w-full bg-[#304625] text-white font-bold text-base sm:text-lg py-3 rounded-[30px] shadow-lg hover:bg-[#1e3a18] transition-colors cursor-pointer" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <button 
+          onClick={() => navigate("/reservation", { state: { branch: isFirst ? "Toul Kork" : "BKK1" } })}
+          className="w-full bg-[#304625] text-white font-bold text-base sm:text-lg py-3 rounded-[30px] shadow-lg hover:bg-[#1e3a18] transition-colors cursor-pointer" 
+          style={{ fontFamily: "'Inter', sans-serif" }}
+        >
           RESERVE NOW
         </button>
       </div>

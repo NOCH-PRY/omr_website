@@ -1,9 +1,21 @@
-import { useForm, useWatch } from "react-hook-form";
+import * as React from "react";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { CheckCircle2, AlertTriangle, Calendar, Users, MapPin, Clock, Coffee } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { 
+  CheckCircle2, 
+  AlertTriangle, 
+  Menu, 
+  ChevronLeft, 
+  ChevronRight 
+} from "lucide-react";
 import { useReservationStore } from "../../store/reservationStore";
 import { appConfig } from "../../config/appConfig";
+import imgHeader30 from "../../assets/omr_bk_night.jpg";
+import imgLogoCircle from "../../assets/omr_logo.png";
+import { toast } from "sonner";
+import "./index.css";
 
 // Zod Schema for Booking Form Validation
 const reservationSchema = z.object({
@@ -15,17 +27,139 @@ const reservationSchema = z.object({
     return selectedDate >= today;
   }, "Reservation date cannot be in the past"),
   timeSlot: z.string().min(1, "Please select a dining time"),
-  guests: z.number().min(1, "Must have at least 1 guest").max(30, "For groups over 30, please contact us directly"),
+  guests: z.number().min(1, "Must have at least 1 guest").max(10, "Reservations are capped at 10 guests online"),
   diningArea: z.string().min(1, "Please select a dining area"),
-  specialRequests: z.string().optional(),
   customerName: z.string().min(2, "Name must be at least 2 characters long"),
   customerPhone: z.string().min(8, "Phone number must be at least 8 digits").regex(/^\+?[0-9\s-]{8,15}$/, "Please enter a valid phone number"),
-  customerEmail: z.string().email("Please enter a valid email address"),
 });
 
 type ReservationFormData = z.infer<typeof reservationSchema>;
 
+// Custom Calendar Component to match screenshot exactly
+function CalendarWidget({ value, onChange }: { value: string; onChange: (date: string) => void }) {
+  const today = new Date();
+  const initialDate = value ? new Date(value) : today;
+  const [selectedDate, setSelectedDate] = React.useState<Date>(initialDate);
+  const [currentMonth, setCurrentMonth] = React.useState<number>(initialDate.getMonth());
+  const [currentYear, setCurrentYear] = React.useState<number>(initialDate.getFullYear());
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const years = Array.from({ length: 5 }, (_, i) => today.getFullYear() + i);
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+
+  const handlePrevMonth = () => {
+    if (currentMonth === 0) {
+      setCurrentMonth(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonth(currentMonth - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) {
+      setCurrentMonth(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonth(currentMonth + 1);
+    }
+  };
+
+  const handleDaySelect = (day: number) => {
+    const newDate = new Date(currentYear, currentMonth, day);
+    setSelectedDate(newDate);
+    
+    const yyyy = newDate.getFullYear();
+    const mm = String(newDate.getMonth() + 1).padStart(2, "0");
+    const dd = String(newDate.getDate()).padStart(2, "0");
+    onChange(`${yyyy}-${mm}-${dd}`);
+  };
+
+  const days = [];
+  for (let i = 0; i < firstDayIndex; i++) {
+    days.push(null);
+  }
+  for (let i = 1; i <= daysInMonth; i++) {
+    days.push(i);
+  }
+
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-lg border border-stone-200/50 w-full max-w-sm mx-auto text-stone-800">
+      <div className="flex items-center justify-between mb-4 px-1">
+        <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-stone-100 rounded-full transition-colors text-stone-600">
+          <ChevronLeft size={18} />
+        </button>
+        <div className="flex gap-1.5 items-center">
+          <select 
+            value={currentMonth}
+            onChange={(e) => setCurrentMonth(parseInt(e.target.value))}
+            className="text-xs sm:text-sm font-semibold text-stone-700 bg-transparent border-none outline-none cursor-pointer focus:ring-0 focus:outline-none py-0.5"
+          >
+            {months.map((m, idx) => (
+              <option key={m} value={idx}>{m}</option>
+            ))}
+          </select>
+          <select 
+            value={currentYear}
+            onChange={(e) => setCurrentYear(parseInt(e.target.value))}
+            className="text-xs sm:text-sm font-semibold text-stone-700 bg-transparent border-none outline-none cursor-pointer focus:ring-0 focus:outline-none py-0.5"
+          >
+            {years.map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+        </div>
+        <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-stone-100 rounded-full transition-colors text-stone-600">
+          <ChevronRight size={18} />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-stone-400 mb-2 uppercase tracking-wider">
+        <span>Su</span>
+        <span>Mo</span>
+        <span>Tu</span>
+        <span>We</span>
+        <span>Th</span>
+        <span>Fr</span>
+        <span>Sa</span>
+      </div>
+
+      <div className="grid grid-cols-7 gap-y-1 gap-x-1.5 text-center text-xs">
+        {days.map((day, idx) => {
+          if (day === null) {
+            return <div key={`empty-${idx}`} />;
+          }
+
+          const isSelected = selectedDate.getDate() === day &&
+            selectedDate.getMonth() === currentMonth &&
+            selectedDate.getFullYear() === currentYear;
+
+          return (
+            <button
+              key={day}
+              type="button"
+              onClick={() => handleDaySelect(day)}
+              className={`w-7.5 h-7.5 mx-auto rounded-full flex items-center justify-center transition-all ${
+                isSelected 
+                  ? "bg-stone-900 text-white font-bold scale-105" 
+                  : "hover:bg-stone-100 text-stone-700 font-light"
+              }`}
+            >
+              {day}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function ReservationPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const { 
     isSubmitting, 
     submitError, 
@@ -35,295 +169,274 @@ export default function ReservationPage() {
     resetBooking 
   } = useReservationStore();
 
+  const initialBranch = location.state?.branch === "BKK1" ? "BKK1" : "Toul Kork";
+  const [selectedBranch, setSelectedBranch] = React.useState<"Toul Kork" | "BKK1">(initialBranch);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
     control,
+    setValue,
+    watch
   } = useForm<ReservationFormData>({
     resolver: zodResolver(reservationSchema),
     defaultValues: {
-      branchId: "1",
+      branchId: initialBranch === "Toul Kork" ? "1" : "2",
       guests: 2,
       timeSlot: "19:00",
-      diningArea: "General Hall",
-      specialRequests: "",
+      diningArea: "Indoor",
       customerName: "",
       customerPhone: "",
-      customerEmail: "",
+      date: new Date().toISOString().split("T")[0],
     }
   });
 
+  const watchGuests = watch("guests") ?? 2;
+
+  const handleBranchToggle = () => {
+    const nextBranch = selectedBranch === "Toul Kork" ? "BKK1" : "Toul Kork";
+    setSelectedBranch(nextBranch);
+    setValue("branchId", nextBranch === "Toul Kork" ? "1" : "2");
+    toast.success(`Switched branch to: ${nextBranch === "Toul Kork" ? "Toul Kork" : "Boeung Keng Kang 1"}`);
+  };
+
   const onSubmit = async (data: ReservationFormData) => {
-    // Sync React Hook Form data with Zustand Store
-    setBookingDetails(data);
-    
-    // Call submit action
+    let backendArea = data.diningArea;
+    if (data.diningArea === "Indoor") backendArea = "General Hall";
+    if (data.diningArea === "Outdoor") backendArea = "Garden Terrace";
+
+    const cleanName = data.customerName.trim().replace(/\s+/g, "").toLowerCase() || "guest";
+    const generatedEmail = `${cleanName}@guest.onemore.com`;
+
+    setBookingDetails({
+      branchId: data.branchId,
+      date: data.date,
+      timeSlot: data.timeSlot,
+      guests: data.guests,
+      diningArea: backendArea,
+      customerName: data.customerName,
+      customerPhone: data.customerPhone,
+      customerEmail: generatedEmail,
+      specialRequests: "Online booking via custom glassmorphic web form.",
+    });
+
     const success = await submitReservation(appConfig.apiUrl);
     if (success) {
-      reset(); // Reset form inputs on success
+      toast.success("Reservation request logged successfully!");
+      reset({
+        branchId: selectedBranch === "Toul Kork" ? "1" : "2",
+        guests: 2,
+        timeSlot: "19:00",
+        diningArea: "Indoor",
+        customerName: "",
+        customerPhone: "",
+        date: new Date().toISOString().split("T")[0],
+      });
     }
   };
 
-  const selectedArea = useWatch({ control, name: "diningArea" }) ?? "General Hall";
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      
-      {/* Page Header */}
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <span className="text-brand-accent text-xs font-bold uppercase tracking-widest">Book A Table</span>
-        <h1 className="text-3xl sm:text-5xl font-serif text-brand-dark mt-2 mb-4">Reservation Sanctuary</h1>
-        <p className="text-stone-600 font-light leading-relaxed">
-          Reserve your table online and experience the ultimate hospitality and authentic Khmer flavors.
-        </p>
-      </div>
+    <div 
+      className="relative min-h-screen w-full flex flex-col items-center justify-start pb-16 bg-cover bg-center overflow-x-hidden" 
+      style={{ backgroundImage: `url(${imgHeader30})`, backgroundAttachment: "fixed" }}
+    >
+      {/* Dark translucent blur background overlay */}
+      <div className="absolute inset-0 bg-black/55 backdrop-blur-[6px] z-0" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* HEADER SECTION */}
+      <header className="relative z-10 w-full max-w-7xl px-5 sm:px-10 h-20 flex items-center justify-between border-b border-white/10 mb-8 sm:mb-12">
+        <button 
+          onClick={() => navigate("/")} 
+          className="p-1 text-white hover:text-brand-gold transition-colors focus:outline-none"
+          aria-label="Home"
+        >
+          <Menu size={28} />
+        </button>
+
+        <div className="w-12 h-12 cursor-pointer transition-transform hover:scale-105" onClick={() => navigate("/")}>
+          <img src={imgLogoCircle} alt="One More Logo" className="w-full h-full object-contain" />
+        </div>
+
+        <button 
+          onClick={handleBranchToggle}
+          className="px-5 py-2.5 rounded-full bg-[#4f6f3b] text-white hover:bg-[#3f5c2c] text-xs font-semibold tracking-wide transition-all shadow-md active:scale-95 cursor-pointer"
+        >
+          Other Branch
+        </button>
+      </header>
+
+      {/* MAIN CONTAINER */}
+      <main className="relative z-10 w-full max-w-2xl px-4 flex flex-col items-center">
         
-        {/* Left Side: Info & Tips */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
+        {/* Glassmorphic Panel Card */}
+        <div className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-[36px] shadow-2xl p-6 sm:p-10 text-center flex flex-col items-center gap-6">
           
-          {/* Branch card highlights */}
-          <div className="bg-brand-dark text-white rounded-3xl p-6 shadow-lg">
-            <h3 className="text-lg font-serif text-brand-gold font-semibold mb-4 flex items-center gap-2 border-b border-white/10 pb-3">
-              <MapPin size={18} /> Our Branches
-            </h3>
-            <div className="flex flex-col gap-4 text-xs font-light leading-relaxed">
-              <div>
-                <p className="font-semibold text-sm text-white">One More Toul Kork</p>
-                <p className="text-white/70">#37, Street 315, Toul Kork, Phnom Penh</p>
-                <p className="text-brand-gold mt-1">+855 15 821 888</p>
-              </div>
-              <div className="border-t border-white/10 pt-4">
-                <p className="font-semibold text-sm text-white">One More BKK1</p>
-                <p className="text-white/70">162 Preah Norodom Blvd, BKK1, Phnom Penh</p>
-                <p className="text-brand-gold mt-1">+855 23 223 888</p>
-              </div>
+          {/* Reservation Header Title */}
+          <div className="flex flex-col items-center">
+            <h1 
+              className="text-white text-3xl sm:text-4.5xl font-serif tracking-wide relative pb-2 select-none border-b-2 border-white/30"
+              style={{ fontFamily: "'Philosopher', serif" }}
+            >
+              Reservation
+            </h1>
+          </div>
+
+          {/* Description Texts */}
+          <div className="space-y-4 max-w-lg text-center select-none text-white/95">
+            <p className="text-xs leading-relaxed font-light text-stone-200">
+              *Reservations must be made at least 24 hours in advance. Once your submission has been received, our team will contact you for confirmation.*
+            </p>
+            <p className="text-xs leading-relaxed font-light text-stone-300">
+              Thank you for choosing and supporting us. We look forward to serving you and wish you an enjoyable dining experience.
+            </p>
+          </div>
+
+          {/* SUCCESS STATE */}
+          {submitSuccess ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center animate-fade-in">
+              <CheckCircle2 className="text-[#8bb974] w-20 h-20 mb-5 animate-pulse" />
+              <h3 className="text-2xl font-serif text-white font-bold mb-2">Booking Received!</h3>
+              <p className="text-stone-300 font-light max-w-sm mb-6 leading-relaxed text-sm">
+                Your reservation request for {selectedBranch} Branch has been logged. Our host will review your details and contact you via phone/Telegram shortly to confirm.
+              </p>
+              <button 
+                onClick={resetBooking} 
+                className="px-8 py-3 rounded-full bg-[#426232] hover:bg-[#304625] text-white text-sm font-semibold transition-colors shadow-lg cursor-pointer"
+              >
+                Book Another Table
+              </button>
             </div>
-          </div>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6 flex flex-col items-stretch text-left">
+              
+              {submitError && (
+                <div className="flex items-center gap-3 bg-red-950/60 border border-red-500/30 text-red-200 p-4 rounded-2xl text-xs">
+                  <AlertTriangle className="shrink-0 text-red-400" size={16} />
+                  <p>{submitError}</p>
+                </div>
+              )}
 
-          {/* Dining area specifications */}
-          <div className="bg-white rounded-3xl p-6 border border-brand-sage/20 shadow-lg text-left">
-            <h3 className="text-lg font-serif text-brand-dark font-semibold mb-4 flex items-center gap-2 border-b border-stone-100 pb-3">
-              <Coffee size={18} /> Dining Venues
-            </h3>
-            <ul className="flex flex-col gap-3 text-xs text-stone-600 font-light">
-              <li className={`p-2.5 rounded-xl transition-all duration-300 ${selectedArea === "General Hall" ? "bg-brand-sage/10 border-l-4 border-brand-accent text-brand-dark font-medium" : ""}`}>
-                <p className="font-semibold">General Hall</p>
-                <p className="text-stone-400 mt-0.5">Classic Khmer elegance. Family & causal dining.</p>
-              </li>
-              <li className={`p-2.5 rounded-xl transition-all duration-300 ${selectedArea === "Garden Terrace" ? "bg-brand-sage/10 border-l-4 border-brand-accent text-brand-dark font-medium" : ""}`}>
-                <p className="font-semibold">Garden Terrace</p>
-                <p className="text-stone-400 mt-0.5">Tropical outdoor dining under the stars.</p>
-              </li>
-              <li className={`p-2.5 rounded-xl transition-all duration-300 ${selectedArea === "VIP Room" ? "bg-brand-sage/10 border-l-4 border-brand-accent text-brand-dark font-medium" : ""}`}>
-                <p className="font-semibold">Private VIP Room</p>
-                <p className="text-stone-400 mt-0.5">Intimate rooms (up to 12 guests) with high privacy.</p>
-              </li>
-              <li className={`p-2.5 rounded-xl transition-all duration-300 ${selectedArea === "VVIP Room" ? "bg-brand-sage/10 border-l-4 border-brand-accent text-brand-dark font-medium" : ""}`}>
-                <p className="font-semibold">Grand VVIP Room</p>
-                <p className="text-stone-400 mt-0.5">Exclusive banquet rooms (up to 30 guests) with custom set menu.</p>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Right Side: Reservation Form */}
-        <div className="lg:col-span-8">
-          <div className="bg-white rounded-3xl border border-brand-sage/20 shadow-xl p-6 sm:p-10 text-left">
-            
-            {/* SUCCESS STATE */}
-            {submitSuccess && (
-              <div className="flex flex-col items-center justify-center py-10 text-center">
-                <CheckCircle2 className="text-brand-accent w-16 h-16 mb-4 animate-bounce" />
-                <h3 className="text-2xl font-serif text-brand-dark font-bold mb-2">Reservation Request Received!</h3>
-                <p className="text-stone-500 font-light max-w-md mb-6 leading-relaxed text-sm">
-                  Thank you! Your table booking has been successfully logged. Our hospitality host will review details and send a confirmation SMS or email shortly.
-                </p>
-                <button 
-                  onClick={resetBooking} 
-                  className="px-6 py-2.5 rounded-full bg-brand-primary hover:bg-brand-dark text-white text-sm font-semibold transition-colors"
-                >
-                  Make Another Booking
-                </button>
+              {/* Form Date Picker Calendar */}
+              <div className="flex flex-col gap-1.5">
+                <Controller
+                  name="date"
+                  control={control}
+                  render={({ field }) => (
+                    <CalendarWidget value={field.value} onChange={field.onChange} />
+                  )}
+                />
+                {errors.date && <p className="text-red-300 text-xs mt-1 text-center font-light">{errors.date.message}</p>}
               </div>
-            )}
 
-            {/* FORM STATE */}
-            {!submitSuccess && (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                
-                {submitError && (
-                  <div className="flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-sm">
-                    <AlertTriangle className="shrink-0" size={18} />
-                    <p>{submitError}</p>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Branch Selection */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold uppercase text-stone-500 tracking-wider">Select Branch</label>
-                    <select 
-                      {...register("branchId")}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                    >
-                      <option value="1">Toul Kork Branch</option>
-                      <option value="2">BKK1 Branch</option>
-                    </select>
-                    {errors.branchId && <p className="text-red-500 text-xs mt-1">{errors.branchId.message}</p>}
-                  </div>
-
-                  {/* Guests count */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold uppercase text-stone-500 tracking-wider flex items-center gap-1"><Users size={12}/> Guests</label>
-                    <input 
-                      type="number" 
-                      min="1" 
-                      max="30"
-                      {...register("guests", { valueAsNumber: true })}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" 
-                    />
-                    {errors.guests && <p className="text-red-500 text-xs mt-1">{errors.guests.message}</p>}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Date selection */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold uppercase text-stone-500 tracking-wider flex items-center gap-1"><Calendar size={12}/> Dining Date</label>
-                    <input 
-                      type="date" 
-                      {...register("date")}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" 
-                    />
-                    {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>}
-                  </div>
-
-                  {/* Time slot Selection */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold uppercase text-stone-500 tracking-wider flex items-center gap-1"><Clock size={12}/> Time Slot</label>
-                    <select 
-                      {...register("timeSlot")}
-                      className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all"
-                    >
-                      <option value="11:30">11:30 AM (Lunch)</option>
-                      <option value="12:00">12:00 PM (Lunch)</option>
-                      <option value="12:30">12:30 PM (Lunch)</option>
-                      <option value="13:00">01:00 PM (Lunch)</option>
-                      <option value="17:30">05:30 PM (Dinner)</option>
-                      <option value="18:00">06:00 PM (Dinner)</option>
-                      <option value="18:30">06:30 PM (Dinner)</option>
-                      <option value="19:00">07:00 PM (Dinner)</option>
-                      <option value="19:30">07:30 PM (Dinner)</option>
-                      <option value="20:00">08:00 PM (Dinner)</option>
-                      <option value="20:30">08:30 PM (Dinner)</option>
-                    </select>
-                    {errors.timeSlot && <p className="text-red-500 text-xs mt-1">{errors.timeSlot.message}</p>}
-                  </div>
-                </div>
-
-                {/* Seating Area selection */}
+              {/* Customer Inputs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold uppercase text-stone-500 tracking-wider">Dining Area Preference</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {[
-                      { val: "General Hall", desc: "Hall" },
-                      { val: "Garden Terrace", desc: "Garden" },
-                      { val: "VIP Room", desc: "VIP Room" },
-                      { val: "VVIP Room", desc: "VVIP Room" },
-                    ].map((area) => (
-                      <label 
-                        key={area.val} 
-                        className={`border rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer text-center select-none transition-all ${
-                          selectedArea === area.val 
-                            ? "border-brand-accent bg-brand-sage/10 text-brand-dark font-medium shadow-sm" 
-                            : "border-stone-200 hover:bg-stone-50 text-stone-600 text-xs font-light"
-                        }`}
-                      >
-                        <input 
-                          type="radio" 
-                          value={area.val} 
-                          {...register("diningArea")} 
-                          className="sr-only" 
-                        />
-                        <span className="text-sm font-semibold">{area.desc}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {errors.diningArea && <p className="text-red-500 text-xs mt-1">{errors.diningArea.message}</p>}
-                </div>
-
-                {/* Section Divider: Customer Details */}
-                <div className="border-t border-stone-100 pt-6">
-                  <h4 className="text-sm font-semibold uppercase tracking-wider text-stone-400 mb-4">Customer Details</h4>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-semibold text-stone-500">Contact Name</label>
-                      <input 
-                        type="text" 
-                        placeholder="John Doe"
-                        {...register("customerName")}
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" 
-                      />
-                      {errors.customerName && <p className="text-red-500 text-xs mt-1">{errors.customerName.message}</p>}
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-semibold text-stone-500">Phone Number</label>
-                      <input 
-                        type="tel" 
-                        placeholder="015 821 888"
-                        {...register("customerPhone")}
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" 
-                      />
-                      {errors.customerPhone && <p className="text-red-500 text-xs mt-1">{errors.customerPhone.message}</p>}
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-semibold text-stone-500">Email Address</label>
-                      <input 
-                        type="email" 
-                        placeholder="john@example.com"
-                        {...register("customerEmail")}
-                        className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" 
-                      />
-                      {errors.customerEmail && <p className="text-red-500 text-xs mt-1">{errors.customerEmail.message}</p>}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Special Requests */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold uppercase text-stone-500 tracking-wider">Special Requests / Occasions</label>
-                  <textarea 
-                    rows={3} 
-                    placeholder="E.g., high chair for baby, celebrating birthday anniversary, kampot pepper dietary allergy..."
-                    {...register("specialRequests")}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-transparent transition-all" 
+                  <label className="text-xs font-semibold text-white/95 tracking-wide">Full name:</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g: Soun Nith"
+                    {...register("customerName")}
+                    className="w-full bg-white text-stone-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#8bb974] focus:border-transparent transition-all border border-stone-200 font-light shadow-sm" 
                   />
+                  {errors.customerName && <p className="text-red-300 text-[10px] mt-0.5">{errors.customerName.message}</p>}
                 </div>
 
-                {/* Submit button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-4 px-6 rounded-xl bg-brand-accent hover:bg-brand-light text-white font-bold text-base shadow-lg transition-all duration-300 disabled:bg-stone-300 disabled:cursor-not-allowed hover:-translate-y-0.5"
-                >
-                  {isSubmitting ? "Logging Reservation..." : "Confirm Reservation Request"}
-                </button>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-white/95 tracking-wide">Phone number (Telegram)</label>
+                  <input 
+                    type="tel" 
+                    placeholder="01x xxx xxx"
+                    {...register("customerPhone")}
+                    className="w-full bg-white text-stone-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#8bb974] focus:border-transparent transition-all border border-stone-200 font-light shadow-sm" 
+                  />
+                  {errors.customerPhone && <p className="text-red-300 text-[10px] mt-0.5">{errors.customerPhone.message}</p>}
+                </div>
+              </div>
 
-              </form>
-            )}
+              {/* Guests and Table selections */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-end">
+                {/* Number of Guest Slider */}
+                <div className="flex flex-col gap-1.5 font-light">
+                  <label className="text-xs font-semibold text-white/95 tracking-wide">Number of guest</label>
+                  <div className="relative pt-6 flex flex-col gap-1">
+                    {/* Floating Bubble over the range thumb */}
+                    <div 
+                      className="absolute bottom-full mb-1 bg-[#426232] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md pointer-events-none select-none transition-all duration-75"
+                      style={{ 
+                        left: `calc(${((watchGuests - 1) / 9) * 100}% - ${(((watchGuests - 1) / 9) * 18) - 9}px)`,
+                        transform: "translateX(-50%)"
+                      }}
+                    >
+                      {watchGuests}
+                      {/* Triangle pointer at the bottom of the bubble */}
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#426232]" />
+                    </div>
 
-          </div>
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="10" 
+                      {...register("guests", { valueAsNumber: true })}
+                      className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#426232] select-none slider-thumb"
+                    />
+                    <div className="flex justify-between text-[10px] text-white/80 select-none font-light">
+                      <span>1</span>
+                      <span>10</span>
+                    </div>
+                  </div>
+                  {errors.guests && <p className="text-red-300 text-[10px] mt-0.5">{errors.guests.message}</p>}
+                </div>
+
+                {/* Table Preference Dropdown */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-white/95 tracking-wide">Table</label>
+                  <div className="relative">
+                    <select
+                      {...register("diningArea")}
+                      className="w-full bg-white text-stone-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#8bb974] focus:border-transparent transition-all border border-stone-200 font-light shadow-sm cursor-pointer appearance-none"
+                    >
+                      <option value="Indoor">Indoor</option>
+                      <option value="Outdoor">Outdoor</option>
+                      <option value="VIP Room">VIP Room</option>
+                      <option value="VVIP Room">VVIP Room</option>
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500">
+                      ▼
+                    </div>
+                  </div>
+                  {errors.diningArea && <p className="text-red-300 text-[10px] mt-0.5">{errors.diningArea.message}</p>}
+                </div>
+              </div>
+
+              {/* Info about the pre-selected branch */}
+              <div className="text-center sm:text-left text-[11px] text-stone-300 select-none bg-white/5 py-2 px-4 rounded-xl border border-white/5 self-center sm:self-auto w-fit">
+                Branch: <span className="text-white font-semibold">{selectedBranch === "Toul Kork" ? "One More Toul Kork" : "One More Boeung Keng Kang 1"}</span>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto self-center mt-4 px-12 py-3 rounded-full bg-[#426232] hover:bg-[#334c26] text-white font-semibold text-sm shadow-lg tracking-wide transition-all active:scale-95 disabled:bg-stone-500 disabled:cursor-not-allowed select-none cursor-pointer"
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+            </form>
+          )}
+
+          {/* Skip the wait Link */}
+          <a 
+            href="/menu" 
+            onClick={(e) => { e.preventDefault(); navigate("/menu"); }} 
+            className="text-xs text-white underline select-none font-light hover:text-brand-gold transition-colors tracking-wide cursor-pointer"
+          >
+            Skip the wait. Pre-order now!
+          </a>
+
         </div>
-
-      </div>
-
+      </main>
     </div>
   );
 }

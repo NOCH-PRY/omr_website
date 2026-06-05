@@ -4,8 +4,8 @@ export const appConfig = {
   apiUrl: import.meta.env.VITE_API_URL ?? "",
   heroHeading:
     import.meta.env.VITE_HERO_HEADING ??
-    "Discover authentic Khmer dining in a modern sanctuary.",
+    "Authentic Khmer cuisine with warm hospitality in Toul Kork",
   heroText:
     import.meta.env.VITE_HERO_TEXT ??
-    "Immerse yourself in the rich flavors of authentic Khmer cuisine, where tradition meets a warm and inviting dining experience.",
+    "Discover traditional Cambodian flavors in a modern, inviting setting. From beloved classics to unique local specialties, we serve authentic dishes prepared with fresh ingredients and a passion for sharing Khmer culinary heritage.",
 };
