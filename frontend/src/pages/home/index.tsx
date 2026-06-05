@@ -17,6 +17,15 @@ import {
 
 import { homeAssets } from "./homeAsset";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "../../components/ui/navigation-menu";
+
 const {
   imgHeader30,
   imgLogo,
@@ -80,45 +89,85 @@ function Header() {
         />
 
         {/* Desktop nav */}
-        <div className="hidden lg:flex items-center gap-7 text-[#fafaf9] text-sm font-light">
-          <a href="#menu" className="home-nav-link">
-            Menu
-          </a>
+        <NavigationMenu
+          viewport={false}
+          className="home-desktop-navigation hidden lg:flex"
+        >
+          <NavigationMenuList className="home-desktop-nav-list">
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <a href="#menu" className="home-nav-link">
+                  Menu
+                </a>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
 
-          <div className="relative group flex items-center z-[1000]">
-            <button type="button" className="home-nav-link cursor-pointer">
+            <NavigationMenuItem className="relative">
+              <NavigationMenuTrigger
+              className="
+                !h-auto !min-h-0 !w-auto !min-w-0
+                !bg-transparent !p-0 !m-0
+                !rounded-none !border-0 !shadow-none
+                !text-[#fafaf9] !text-[18px] !font-light !leading-normal
+                hover:!bg-transparent hover:!text-[#8bb974]
+                focus:!bg-transparent focus:!text-[#8bb974]
+                data-[state=open]:!bg-transparent data-[state=open]:!text-[#8bb974]
+                [&>svg]:!hidden
+              "
+            >
               Event
-            </button>
+            </NavigationMenuTrigger>
 
-            <div className="absolute left-1/2 top-full z-[1001] w-56 -translate-x-1/2 pt-3">
-              <div className="event-dropdown-panel">
-                <Link to="/events" className="event-dropdown-link">
-                  Room Booking
+              <NavigationMenuContent className="home-event-menu-content">
+                <div className="home-event-menu-list">
+                  <NavigationMenuLink asChild>
+                    <Link to="/events" className="home-event-menu-link">
+                      Room Booking
+                    </Link>
+                  </NavigationMenuLink>
+
+                  <NavigationMenuLink asChild>
+                    <Link to="/services" className="home-event-menu-link">
+                      Services
+                    </Link>
+                  </NavigationMenuLink>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <a href="#branches" className="home-nav-link">
+                  Branches
+                </a>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link to="/aboutus" className="home-nav-link">
+                  About Us
                 </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
 
-                <Link to="/services" className="event-dropdown-link">
-                  Services
-                </Link>
-              </div>
-            </div>
-          </div>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <a href="#gallery" className="home-nav-link">
+                  Gallery
+                </a>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
 
-          <a href="#branches" className="home-nav-link">
-            Branches
-          </a>
-
-          <Link to="/aboutus" className="home-nav-link">
-            About Us
-          </Link>
-
-          <a href="#gallery" className="home-nav-link">
-            Gallery
-          </a>
-
-          <a href="#contact" className="home-nav-link">
-            Contact
-          </a>
-        </div>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <a href="#contact" className="home-nav-link">
+                  Contact
+                </a>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
 
         {/* Desktop reservation button */}
         <Button
