@@ -1,365 +1,718 @@
-import { useState } from "react";
+import * as React from "react";
+import "./index.css";
 import { Link } from "react-router-dom";
-import imgHeader30 from "../../assets/omr_bk_night.jpg";
 
-// Rich Khmer Cuisine & Dining Images from Unsplash
-const images = {
-  roastedChicken: "https://images.unsplash.com/photo-1598515214211-89d3e73ae83b?auto=format&fit=crop&w=600&q=80",
-  fishAmok: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80",
-  beefLokLak: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80",
-  menuBg: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80",
-  sustainabilityBg: "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?auto=format&fit=crop&w=1200&q=80",
-  
-  // Venues
-  indoor: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
-  outdoor: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=800&q=80",
-  roomService: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
-  eventService: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=800&q=80",
+import { Button } from "../../components/ui/button";
+import ScrollDownButton from "../../components/ui/ScrollDownButton";
+import svgPaths from "../../assets/svgPaths";
+import SiteNav from "../../app/layouts/SiteNav";
 
-  // Testimonials
-  avatar1: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-  avatar2: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
-  avatar3: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
-};
+import {
+  companies,
+  menuData,
+  stats,
+  testimonials,
+  venues,
+  type MenuCategory,
+} from "./homeData";
 
-const signatureDishes = [
-  { name: "Fish Amok", desc: "Cambodia's national dish — steamed fish in a rich, savory coconut curry paste wrapped in a banana leaf.", img: images.fishAmok },
-  { name: "Roasted Khmer Chicken", desc: "Crispy skin roasted chicken marinated in local herbs and honey, served with sweet fish sauce.", img: images.roastedChicken },
-  { name: "Beef Lok Lak", desc: "Sizzling wok-tossed tender beef cubes in a dark savory glaze, served with fresh limes and black pepper sauce.", img: images.beefLokLak },
-];
+import { homeAssets } from "./homeAsset";
 
-const menuPreviewData = {
-  breakfast: [
-    { name: "Pork Blood Porridge", desc: "A traditional morning favorite, slow-cooked with fresh local herbs and tender pork.", price: "$2.00" },
-    { name: "Bai Sach Chrouk", desc: "Sweet charcoal-grilled pork served with warm broken rice and pickled cucumber.", price: "$2.50" },
-    { name: "Kuy Teav (Noodle Soup)", desc: "Fragrant rice noodle soup cooked with clear pork broth and aromatic toppings.", price: "$3.00" },
-  ],
-  lunch: [
-    { name: "Traditional Fish Amok", desc: "Steamed fish fillet cooked in a rich, spicy lemongrass curry paste.", price: "$8.00" },
-    { name: "Beef Lok Lak Rice Set", desc: "Sautéed beef cubes served with garlic fried rice and a fresh egg.", price: "$9.00" },
-    { name: "Khmer Chicken Curry", desc: "Sweet red curry made with sweet potatoes, coconut milk, and chicken.", price: "$7.50" },
-  ],
-  dinner: [
-    { name: "Kampot Pepper Crab", desc: "Blue crab stir-fried in a rich sweet sauce with fragrant fresh green Kampot pepper.", price: "$15.00" },
-    { name: "Grilled River Prawns", desc: "Fresh local river prawns grilled over charcoal, brushed with garlic herb butter.", price: "$14.00" },
-    { name: "Somlor Machu Kroeung", desc: "Lemongrass sour soup cooked with beef ribs, morning glory, and lime juice.", price: "$8.00" },
-  ],
-  sets: [
-    { name: "Royal Khmer Tasting Set", desc: "Fish Amok, Beef Lok Lak, Mango Salad, soup, rice, and traditional dessert.", price: "$25.00" },
-    { name: "Family BBQ Platter", desc: "Grilled pork ribs, beef skewers, local sausage, and vegetables for 4-6 people.", price: "$45.00" },
-    { name: "Chef's Garden Special Set", desc: "Sustainable organic menu featuring selected locally-grown seasonal ingredients.", price: "$30.00" },
-  ],
-};
 
-const tabOptions = [
-  { id: "breakfast", label: "Breakfast" },
-  { id: "lunch", label: "Lunch" },
-  { id: "dinner", label: "Dinner" },
-  { id: "sets", label: "Meal Sets" },
-] as const;
+const {
+  imgHeader30,
+  imgLogo,
+  imgSignatureDish,
+  imgImg,
+  imgImg1,
+  imgImg2,
+  imgGlossImg,
+  imgOneMoreTk,
+  imgMenu,
+  imgFrame909,
+  imgRectangle36,
+  imgTestimonial12,
+  imgTestImg,
+  imgQrCode,
+  imgQrCode1,
+} = homeAssets;
 
-type TabId = (typeof tabOptions)[number]["id"];
+function StarRating({ paths }: { paths: string[] }) {
+  return (
+    <svg
+      className="block"
+      fill="none"
+      viewBox="0 0 107.414 15.57"
+      width="107"
+      height="16"
+    >
+      {paths.map((d, i) => (
+        <path key={i} d={d} fill="#E3A56B" />
+      ))}
+    </svg>
+  );
+}
 
-const testimonials = [
-  {
-    text: "The Fish Amok here is absolute perfection! Steamed in a banana leaf with rich coconut cream and lemongrass paste. The garden terrace setting in Toul Kork makes you forget you are in the city.",
-    date: "2 Mar. 2026",
-    name: "Anthony Bruff",
-    avatar: images.avatar1,
-    bg: "bg-brand-dark",
-  },
-  {
-    text: "We ordered the Khmer BBQ Platter and Beef Lok Lak. The beef was incredibly tender and flavorful, and the pepper sauce was fantastic. The staff are so attentive and welcoming.",
-    date: "25 Mar. 2026",
-    name: "Regina Gella",
-    avatar: images.avatar2,
-    bg: "bg-brand-primary",
-  },
-  {
-    text: "A beautiful restaurant serving authentic Khmer cuisine. The Pork Blood Porridge is our favorite morning breakfast, and their commitment to employing local staff and supporting the community is inspiring.",
-    date: "5 Apr. 2026",
-    name: "Jamiyu Aliyu",
-    avatar: images.avatar3,
-    bg: "bg-brand-light",
-  },
-];
+function QuoteIcon({ d }: { d: string }) {
+  return (
+    <svg fill="none" viewBox="0 0 19.9111 14.2222" width="20" height="15">
+      <path d={d} fill="#E3A56B" />
+    </svg>
+  );
+}
 
-export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<TabId>("breakfast");
+function Header() {
+  return (
+    <header className="home-header relative w-full overflow-hidden shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
+      <div className="absolute inset-0">
+        <img
+          alt=""
+          className="home-header-bg absolute left-0 object-cover"
+          src={imgHeader30}
+        />
+        <div className="home-header-overlay absolute inset-0" />
+      </div>
+
+      <SiteNav logo={imgLogo} />
+
+      <div className="home-hero-content relative z-10 flex flex-col items-start px-5 sm:px-16 pt-16 sm:pt-24 pb-20 sm:pb-32">
+        <h1 className="home-hero-title text-[#fafaf9] text-4xl sm:text-5xl lg:text-[71px] leading-none text-left mb-6">
+          One More Restaurant
+        </h1>
+
+        <p className="home-hero-text text-[#fbfbfb] text-sm leading-relaxed max-w-lg mb-8">
+          Immerse yourself in the rich flavors of authentic Khmer cuisine, where
+          tradition meets a warm and inviting dining experience.
+        </p>
+
+        <div className="home-hero-actions flex flex-wrap gap-4">
+          <Button asChild className="home-primary-button">
+            <a href="#menu">Explore our menu</a>
+          </Button>
+
+          <Button asChild variant="outline" className="home-outline-button">
+            <Link to="/reservation">Book Your Dining</Link>
+          </Button>
+        </div>
+      </div>
+
+      <ScrollDownButton targetId="signature-section" />
+    </header>
+  );
+}
+
+function SignatureTitle() {
+  return (
+    <div
+      id="signature-section"
+      className="home-section-title-wrapper home-section-title-dark"
+    >
+      <h2 className="home-section-title">Our Signature Dishes</h2>
+    </div>
+  );
+}
+
+function SignatureDish() {
+  return (
+    <section className="relative w-full py-16 px-5 sm:px-14">
+      <div className="absolute inset-0">
+        <img
+          alt=""
+          className="home-section-bg-img absolute left-0 object-cover"
+          src={imgSignatureDish}
+        />
+        <div className="signature-overlay absolute backdrop-blur-[3px]" />
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center gap-12">
+        <p className="font-inter text-white text-xl sm:text-2xl text-center max-w-2xl leading-relaxed">
+          Discover our most beloved authentic Khmer cuisine
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
+          {[imgImg1, imgImg2, imgImg].map((image, index) => (
+            <div
+              key={index}
+              className="w-full aspect-square rounded-2xl overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-105"
+            >
+              <img
+                alt={`Signature dish ${index + 1}`}
+                className="w-full h-full object-cover"
+                src={image}
+              />
+            </div>
+          ))}
+        </div>
+
+        <button className="browse-button">Browse More</button>
+      </div>
+    </section>
+  );
+}
+
+function BranchesTitle() {
+  return (
+    <div
+      id="branches"
+      className="home-section-title-wrapper home-section-title-dark"
+    >
+      <h2 className="home-section-title reservation-title">Branches</h2>
+    </div>
+  );
+}
+
+function BranchCard({ isFirst }: { isFirst: boolean }) {
+  const details = isFirst
+    ? {
+        branch: "Toul Kork",
+        phone: "+855 15 821 888",
+        address: "#37, Street 315, Toul Kork, Phnom Penh",
+        mapUrl:
+          "https://www.google.com/maps/search/One+More+Restaurant+Toul+Kork",
+      }
+    : {
+        branch: "BKK1",
+        phone: "+855 23 223 888",
+        address: "162 Preah Norodom Blvd, BKK1, Phnom Penh",
+        mapUrl: "https://maps.app.goo.gl/QNh2DUu7QbqMTSkv6",
+      };
 
   return (
-    <div className="w-full">
-      {/* 1. HERO SECTION */}
-      <section className="relative w-full h-[85vh] flex items-center justify-start overflow-hidden">
-        <div className="absolute inset-0">
-          <img alt="One More Restaurant Exterior" className="w-full h-full object-cover" src={imgHeader30} />
-          <div className="absolute inset-0 bg-linear-to-r from-brand-dark/90 via-brand-dark/50 to-transparent" />
+    <div className="reservation-card relative border-4 border-white flex-1 min-w-[280px] max-w-[450px] w-full rounded-[47px] overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
+      <div className="absolute inset-0 opacity-70">
+        <img
+          alt=""
+          className="reservation-card-bg-img absolute inset-0 w-full h-full object-cover opacity-80"
+          src={imgGlossImg}
+        />
+      </div>
+
+      <div className="absolute top-[12%] left-1/2 -translate-x-1/2 w-[60%] h-[25%]">
+        <img
+          alt="One More Logo"
+          className="w-full h-full object-contain"
+          src={imgOneMoreTk}
+        />
+      </div>
+
+      <div className="absolute text-center text-white top-[46%] left-1/2 -translate-x-1/2 w-[90%]">
+        <p className="font-gloock text-3xl sm:text-4xl leading-tight font-normal mb-2">
+          One More
+        </p>
+
+        <p className="font-inter text-lg sm:text-xl underline leading-relaxed font-light">
+          {details.branch}
+        </p>
+      </div>
+
+      <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 w-[80%] max-w-[280px]">
+        <Link to="/reservation" className="reserve-now-button block text-center">
+          RESERVE NOW
+        </Link>
+      </div>
+
+      <div className="absolute bottom-[4%] left-1/2 -translate-x-1/2 w-[90%] text-center">
+        <a
+          href={`tel:${details.phone.replace(/\s+/g, "")}`}
+          className="block text-white text-xs sm:text-sm underline leading-normal hover:text-[#8bb974] transition-colors"
+        >
+          {details.phone}
+        </a>
+
+        <a
+          href={details.mapUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-white text-[10px] sm:text-xs underline leading-normal mt-1 hover:text-[#8bb974] transition-colors px-2"
+        >
+          {details.address}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function BranchesContent() {
+  return (
+    <section className="reservation-section-bg w-full py-16 px-5 sm:px-14 flex flex-wrap justify-center items-center gap-10">
+      <BranchCard isFirst />
+      <BranchCard isFirst={false} />
+    </section>
+  );
+}
+
+function MenuSection() {
+  const [activeTab, setActiveTab] = React.useState<MenuCategory>("breakfast");
+
+  const tabs: { id: MenuCategory; label: string }[] = [
+    { id: "breakfast", label: "Breakfast" },
+    { id: "lunch", label: "Lunch" },
+    { id: "dinner", label: "Dinner" },
+    { id: "sets", label: "Meal Sets" },
+  ];
+
+  return (
+    <section id="menu" className="relative w-full py-12">
+      <div className="absolute inset-0">
+        <img
+          alt=""
+          className="home-section-bg-img absolute left-0 object-cover"
+          src={imgMenu}
+        />
+        <div className="menu-overlay absolute" />
+      </div>
+
+      <div className="relative z-10">
+        <div className="flex items-center justify-center py-10">
+          <h2 className="home-section-title text-white">Our Menu</h2>
         </div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="max-w-xl text-left text-white">
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-serif leading-tight mb-4 drop-shadow-md">
-              One More <br/>
-              <span className="text-brand-gold">Restaurant</span>
-            </h1>
-            <p className="text-lg text-white/90 font-light mb-8 leading-relaxed max-w-lg">
-              Immerse yourself in the rich flavors of authentic Khmer cuisine, where age-old culinary tradition meets a warm, modern sanctuary.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/menu" className="px-8 py-3.5 rounded-full bg-brand-accent hover:bg-brand-light text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
-                Explore our menu
-              </Link>
-              <Link to="/reservation" className="px-8 py-3.5 rounded-full border-2 border-brand-sage text-white font-semibold text-sm hover:bg-white/10 transition-all duration-300 hover:-translate-y-0.5">
-                Book Your Table
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 2. SIGNATURE DISHES */}
-      <section className="py-20 bg-brand-dark text-white text-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl font-serif text-brand-gold mb-3">Our Signature Dishes</h2>
-          <p className="text-white/70 max-w-2xl mx-auto mb-12 font-light">
-            Discover our most beloved authentic Khmer cuisine, prepared by master chefs using local organic ingredients.
-          </p>
+        <div className="flex justify-center gap-6 sm:gap-16 py-4 border-t border-b border-white/20 mx-6 sm:mx-20 mb-8">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {signatureDishes.map((dish, i) => (
-              <div key={i} className="group bg-brand-primary/40 border border-brand-light/20 rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1">
-                <div className="relative aspect-video overflow-hidden">
-                  <img alt={dish.name} src={dish.img} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-black/20" />
-                </div>
-                <div className="p-6 text-left">
-                  <h3 className="text-xl font-serif font-semibold text-brand-gold mb-2">{dish.name}</h3>
-                  <p className="text-white/80 text-sm font-light leading-relaxed">{dish.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-12">
-            <Link to="/menu" className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand-accent hover:bg-brand-light text-white font-semibold text-sm shadow-md transition-all">
-              Browse Full Menu
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. RESERVATION TEASER */}
-      <section className="py-20 bg-[#F4F1EA] text-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl font-serif text-brand-dark mb-3">Book Your Experience</h2>
-          <p className="text-stone-600 max-w-xl mx-auto mb-12 font-light">
-            Whether for family dining, business meetings, or wedding receptions, we offer the perfect setting across our branches.
-          </p>
-
-          <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
-            {/* Toul Kork Branch Card */}
-            <div className="bg-white rounded-3xl p-8 border border-brand-sage/20 shadow-xl max-w-sm w-full text-center flex flex-col justify-between aspect-3/4 hover:shadow-2xl transition-all duration-300">
-              <div>
-                <span className="inline-block px-3 py-1 rounded-full bg-brand-sage/20 text-brand-primary text-xs font-semibold uppercase tracking-wider mb-4">Branch</span>
-                <h3 className="text-2xl font-serif text-brand-dark font-bold mb-2">Toul Kork</h3>
-                <p className="text-stone-500 text-sm font-light leading-relaxed mb-6">
-                  Experience dining in our beautiful traditional wooden architecture, featuring private VIP rooms and lush garden terrace scenery.
-                </p>
-              </div>
-              <div className="mt-auto">
-                <Link to="/reservation" className="w-full inline-block py-3 rounded-full bg-brand-primary hover:bg-brand-dark text-white font-bold text-sm shadow-md transition-colors mb-4">
-                  RESERVE NOW
-                </Link>
-                <div className="text-xs text-stone-500">
-                  <p className="underline mb-1">+855 15 821 888</p>
-                  <p>#37, Street 315, Toul Kork, Phnom Penh</p>
-                </div>
-              </div>
-            </div>
-
-            {/* BKK1 Branch Card */}
-            <div className="bg-white rounded-3xl p-8 border border-brand-sage/20 shadow-xl max-w-sm w-full text-center flex flex-col justify-between aspect-3/4 hover:shadow-2xl transition-all duration-300">
-              <div>
-                <span className="inline-block px-3 py-1 rounded-full bg-brand-sage/20 text-brand-primary text-xs font-semibold uppercase tracking-wider mb-4">Branch</span>
-                <h3 className="text-2xl font-serif text-brand-dark font-bold mb-2">Boeung Keng Kang 1</h3>
-                <p className="text-stone-500 text-sm font-light leading-relaxed mb-6">
-                  A modern boutique dining space located in the heart of Phnom Penh city, offering refined Khmer cuisine ideal for business and leisure.
-                </p>
-              </div>
-              <div className="mt-auto">
-                <Link to="/reservation" className="w-full inline-block py-3 rounded-full bg-brand-primary hover:bg-brand-dark text-white font-bold text-sm shadow-md transition-colors mb-4">
-                  RESERVE NOW
-                </Link>
-                <div className="text-xs text-stone-500">
-                  <p className="underline mb-1">+855 23 223 888</p>
-                  <p>162 Preah Norodom Blvd, BKK1, Phnom Penh</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. TABS MENU PREVIEW */}
-      <section className="relative py-20 bg-cover bg-center" style={{ backgroundImage: `url(${images.menuBg})` }}>
-        <div className="absolute inset-0 bg-brand-dark/90 backdrop-blur-sm" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white text-center">
-          <h2 className="text-3xl sm:text-4xl font-serif text-brand-gold mb-3">Our Menu Highlights</h2>
-          <p className="text-white/70 max-w-xl mx-auto mb-10 font-light">
-            Take a glance at our popular dishes available throughout the day.
-          </p>
-
-          {/* Tabs header */}
-          <div className="flex flex-wrap justify-center gap-4 border-b border-white/20 pb-4 mb-8">
-            {tabOptions.map((tab) => (
+            return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-2 text-sm font-semibold transition-all duration-300 relative ${
-                  activeTab === tab.id ? "text-brand-gold" : "text-white/70 hover:text-white"
+                className={`menu-tab font-semibold text-sm sm:text-lg cursor-pointer transition-all duration-300 relative pb-2 ${
+                  isActive ? "menu-tab-active" : "menu-tab-inactive"
                 }`}
               >
                 {tab.label}
-                {activeTab === tab.id && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-gold" />
+
+                {isActive && (
+                  <span className="absolute bottom-[-4px] left-0 right-0 h-[3px] bg-[#8bb974] rounded-full transition-all duration-300" />
                 )}
               </button>
-            ))}
-          </div>
+            );
+          })}
+        </div>
 
-          {/* Menu items grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {menuPreviewData[activeTab].map((item, idx) => (
-              <div key={idx} className="flex justify-between items-start bg-black/40 border border-white/10 p-5 rounded-xl text-left hover:border-brand-accent/40 transition-colors">
-                <div>
-                  <h4 className="text-lg font-semibold text-brand-gold">{item.name}</h4>
-                  <p className="text-xs text-white/70 mt-1 font-light leading-relaxed">{item.desc}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-6 sm:px-20 pb-10 max-w-6xl mx-auto">
+          {menuData[activeTab].map((item, i) => (
+            <div
+              key={i}
+              className="menu-card flex gap-4 items-start p-4 rounded-xl"
+            >
+              <div className="relative shrink-0 w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] rounded-[13px] overflow-hidden shadow-[0px_4px_4px_0px_rgba(195,181,181,0.25)]">
+                <div className="absolute inset-0 opacity-65 overflow-hidden rounded-[25px] pointer-events-none">
+                  <img
+                    alt=""
+                    className="absolute w-[190%] h-[191%] -left-[42%] -top-[47%]"
+                    src={imgFrame909}
+                  />
                 </div>
-                <div className="text-lg font-bold text-brand-accent ml-4">{item.price}</div>
+
+                <img
+                  alt={item.name}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src={item.img}
+                />
               </div>
-            ))}
-          </div>
+
+              <div className="flex flex-col gap-1 pt-1 flex-1">
+                <p className="font-inter text-[#f6fdf2] font-semibold text-base sm:text-lg leading-snug">
+                  {item.name}
+                </p>
+
+                <p className="font-inter text-white/80 text-xs sm:text-sm leading-relaxed">
+                  {item.desc}
+                </p>
+
+                <p className="font-inter text-[#8bb974] font-extrabold text-base mt-2">
+                  {item.price}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
 
-      {/* 5. VENUES GALLERY */}
-      <section className="py-20 bg-brand-primary text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl sm:text-4xl font-serif text-brand-gold text-center mb-3">Our Dining Spaces</h2>
-          <p className="text-white/85 text-center max-w-xl mx-auto mb-16 font-light">
-            Explore our diverse dining venues curated to elevate your gastronomic experience.
-          </p>
-
-          <div className="flex flex-col gap-16">
-            {/* Row 1 */}
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="w-full md:w-1/2 aspect-4/3 rounded-2xl overflow-hidden shadow-2xl">
-                <img alt="Indoor Venue" src={images.indoor} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div className="w-full md:w-1/2 text-left">
-                <h3 className="text-2xl font-serif text-brand-gold mb-3">Elegant Indoor Hall</h3>
-                <p className="text-white/80 font-light leading-relaxed">
-                  Our air-conditioned main dining hall combines modern luxury comforts with traditional Khmer craftsmanship, offering an atmosphere of elegant tranquility perfect for family reunions and dinner dates.
-                </p>
-              </div>
-            </div>
-
-            {/* Row 2 */}
-            <div className="flex flex-col md:flex-row-reverse gap-8 items-center">
-              <div className="w-full md:w-1/2 aspect-4/3 rounded-2xl overflow-hidden shadow-2xl">
-                <img alt="Outdoor Venue" src={images.outdoor} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div className="w-full md:w-1/2 text-left">
-                <h3 className="text-2xl font-serif text-brand-gold mb-3">Tropical Garden Terrace</h3>
-                <p className="text-white/80 font-light leading-relaxed">
-                  Dine al-fresco under a canopy of tropical greenery, surrounded by running water ponds and soft ambient lighting. It provides a peaceful escape from the bustling city sounds.
-                </p>
-              </div>
-            </div>
-
-            {/* Row 3 */}
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="w-full md:w-1/2 aspect-4/3 rounded-2xl overflow-hidden shadow-2xl">
-                <img alt="VIP Rooms" src={images.roomService} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div className="w-full md:w-1/2 text-left">
-                <h3 className="text-2xl font-serif text-brand-gold mb-3">Exclusive VIP & VVIP Rooms</h3>
-                <p className="text-white/80 font-light leading-relaxed">
-                  Offering complete privacy for corporate meetings, executive dinners, or private family celebrations. Fully equipped with audio-visual setups and bespoke host services.
-                </p>
-              </div>
-            </div>
-          </div>
+        <div className="flex justify-center pb-12">
+          <button className="view-menu-button">View Full Menu</button>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* 6. SUSTAINABILITY & STATS */}
-      <section className="relative py-24 bg-cover bg-center" style={{ backgroundImage: `url(${images.sustainabilityBg})` }}>
-        <div className="absolute inset-0 bg-black/75" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white text-left">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-serif text-brand-gold mb-4">Our Commitment to a Greener Future</h2>
-              <p className="text-white/90 text-lg leading-relaxed font-light">
-                At One More, we believe in sustainable luxury. Our community initiatives support organic local farmers, minimize zero-plastic dining, and provide equal opportunities to our local workforce.
+function VenueSection() {
+  return (
+    <section className="relative w-full bg-[#426232] overflow-hidden">
+      <div className="hidden lg:block absolute left-[-60px] top-0 opacity-50 rotate-[3.79deg]">
+        <div className="blur-[1.5px] w-[212px] h-[465px]">
+          <img
+            alt=""
+            className="w-full h-full object-cover"
+            src={imgRectangle36}
+          />
+        </div>
+      </div>
+
+      <div className="hidden lg:block absolute right-[-60px] top-[40%] opacity-50 rotate-[176.62deg] scale-y-[-1]">
+        <div className="blur-[1.5px] w-[210px] h-[455px]">
+          <img
+            alt=""
+            className="w-full h-full object-cover"
+            src={imgRectangle36}
+          />
+        </div>
+      </div>
+
+      <div className="home-section-title-wrapper home-section-title-light">
+        <h2 className="home-section-title large">Our Venues</h2>
+      </div>
+
+      <div className="flex flex-col gap-16 py-16 px-5 sm:px-12 max-w-6xl mx-auto">
+        {venues.map((venue, i) => (
+          <div
+            key={i}
+            className={`flex flex-col ${
+              venue.side === "left" ? "md:flex-row-reverse" : "md:flex-row"
+            } gap-8 items-center`}
+          >
+            <div className="w-full md:w-1/2 aspect-[474/285] overflow-hidden rounded-xl shadow-2xl">
+              <img
+                alt={venue.title}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                src={venue.img}
+              />
+            </div>
+
+            <div
+              className={`w-full md:w-1/2 text-white ${
+                venue.side === "left" ? "md:text-right" : "md:text-left"
+              }`}
+            >
+              <h3 className="font-gloock text-3xl sm:text-[35px] leading-[38px] mb-4">
+                {venue.title}
+              </h3>
+
+              <p className="font-inter text-base sm:text-lg lg:text-[22px] leading-relaxed">
+                {venue.desc}
               </p>
             </div>
-            <div className="flex flex-col gap-6 text-white/80 text-sm font-light">
-              <p>
-                Every dining booking supports local farming cooperatives in Siem Reap and Kampot, promoting biological farming and sustainable water management.
-              </p>
-              <div className="flex flex-wrap gap-4 mt-2">
-                <Link to="/contact" className="px-6 py-2.5 rounded-full border border-white text-white text-xs font-semibold hover:bg-white/10 transition-colors">
-                  Learn More
-                </Link>
-              </div>
-            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function StatsSection() {
+  return (
+    <section className="relative w-full py-24 px-5 sm:px-16">
+      <div className="absolute inset-0">
+        <img
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          src={imgSignatureDish}
+        />
+        <div className="absolute inset-0 bg-[rgba(0,0,0,0.6)]" />
+      </div>
+
+      <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-16">
+        <div className="flex flex-col lg:flex-row gap-10 items-start">
+          <div className="flex-1">
+            <p className="font-gloock text-white text-3xl sm:text-[40px] leading-[48px]">
+              Our Commitment to a Greener Future
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8 border-t border-white/20">
-            <div className="flex flex-col">
-              <span className="text-brand-gold text-5xl lg:text-7xl font-serif font-bold">20,000+</span>
-              <span className="text-white/70 text-xs uppercase tracking-widest mt-2">Local Farmers Supported</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-brand-gold text-5xl lg:text-7xl font-serif font-bold">100%</span>
-              <span className="text-white/70 text-xs uppercase tracking-widest mt-2">Cambodian Staff Employed</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-brand-gold text-5xl lg:text-7xl font-serif font-bold">5+</span>
-              <span className="text-white/70 text-xs uppercase tracking-widest mt-2">Organic Farm Partners</span>
+          <div className="flex-1 flex flex-col gap-7">
+            <p className="font-inter text-white text-lg leading-[26px] font-medium">
+              At Samanea, we believe in luxury that nurtures the earth. Our
+              sustainability initiatives are designed to create a positive
+              impact on the local community and environment. Join us in our
+              journey towards a harmonious coexistence with nature.
+            </p>
+
+            <div className="flex flex-wrap gap-5 items-center">
+              <button className="learn-more-button">Learn More</button>
+
+              <button className="get-involved-button">
+                Get Involved
+                <svg
+                  width="6"
+                  height="11"
+                  fill="none"
+                  viewBox="0 0 5.94808 10.3259"
+                >
+                  <path d={svgPaths.p21bc19f0} fill="white" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* 7. GUEST TESTIMONIALS */}
-      <section className="py-20 bg-[#FAF8F5]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-serif text-brand-dark mb-3">Guest Testimonials</h2>
-          <p className="text-stone-600 max-w-xl mx-auto mb-12 font-light">
-            Hear from our beloved local and international guests about their dining experience.
-          </p>
+        <div className="flex flex-col md:flex-row gap-10 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-white/20">
+          {stats.map((stat, i) => (
+            <div
+              key={i}
+              className="flex-1 pt-6 md:pt-0 md:pl-10 first:pt-0 first:pl-0"
+            >
+              <p className="font-inter text-white font-semibold text-5xl sm:text-[71px] leading-[1.2]">
+                {stat.value}
+              </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, idx) => (
-              <div key={idx} className="bg-white rounded-2xl p-8 border border-brand-sage/20 shadow-lg text-left flex flex-col justify-between">
-                <div>
-                  <div className="text-brand-gold text-3xl mb-4">“</div>
-                  <p className="text-stone-600 text-sm font-light leading-relaxed mb-6">{t.text}</p>
+              <p className="font-inter text-white/80 font-bold text-sm sm:text-[18px] leading-[1.4] tracking-wider uppercase">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TestimonialsTitle() {
+  return (
+    <div className="home-section-title-wrapper home-section-title-dark">
+      <h2 className="home-section-title large">Guest Testimonials</h2>
+    </div>
+  );
+}
+
+function TestimonialsSection() {
+  return (
+    <section className="relative w-full py-16 px-5 sm:px-10 overflow-hidden">
+      <div className="absolute inset-0">
+        <img
+          alt=""
+          className="testimonial-bg-img absolute object-cover"
+          src={imgTestimonial12}
+        />
+        <div className="absolute inset-0 bg-[rgba(0,0,0,0.6)]" />
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+          {testimonials.map((t, i) => (
+            <div
+              key={i}
+              className="testimonial-card relative rounded-[8.889px] overflow-hidden"
+            >
+              <img
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover rounded-[8.889px]"
+                src={imgTestImg}
+              />
+
+              <div
+                className="absolute inset-0 rounded-[8.889px]"
+                style={{ backgroundColor: t.bg, opacity: 0.88 }}
+              />
+
+              <div className="testimonial-content relative z-10 p-6 sm:p-7 flex flex-col h-full">
+                <div className="mb-2">
+                  <QuoteIcon d={svgPaths.pb219d80} />
                 </div>
-                <div className="flex items-center gap-4 pt-4 border-t border-stone-100">
-                  <img alt={t.name} src={t.avatar} className="w-12 h-12 rounded-full object-cover" />
-                  <div>
-                    <h5 className="font-semibold text-brand-dark text-sm">{t.name}</h5>
-                    <span className="text-xs text-stone-400">{t.date}</span>
-                  </div>
+
+                <p className="testimonial-text text-[#fef9ed] text-[14px] leading-relaxed text-justify flex-1 mb-4">
+                  {t.text}
+                </p>
+
+                <div className="flex justify-end mb-4">
+                  <QuoteIcon d={svgPaths.p2df8ba40} />
                 </div>
+
+                <p className="testimonial-date text-[#e3a56b] text-[12px] tracking-widest mb-4">
+                  {t.date}
+                </p>
+
+                <div className="mb-4">
+                  <StarRating paths={t.ratingPaths} />
+                </div>
+
+                <div className="flex items-center gap-3 mt-auto">
+                  <img
+                    alt={t.name}
+                    src={t.avatar}
+                    className="w-14 h-14 rounded-full object-cover"
+                  />
+
+                  <p className="testimonial-name text-[#e3a56b] text-[14px]">
+                    {t.name}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="opacity-70">
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 23.8932 23.8932"
+            className="rotate-[43deg]"
+          >
+            <path
+              d={svgPaths.p3906f400}
+              stroke="#FAD795"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="0.888889"
+            />
+          </svg>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FooterSection() {
+  return (
+    <div className="bg-[#304625] w-full py-12 px-5 sm:px-12">
+      <div className="flex items-center justify-center mb-8">
+        <h2 className="home-section-title large">Our Companies</h2>
+      </div>
+
+      <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6">
+        {companies.map((company, i) => (
+          <div
+            key={i}
+            className="relative w-[120px] h-[80px] sm:w-[145px] sm:h-[90px] overflow-hidden rounded"
+            style={{ backgroundColor: company.bg }}
+          >
+            <img
+              alt={company.label}
+              className="absolute inset-0 w-full h-full object-contain p-2"
+              src={company.img}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Footer() {
+  const socials = [
+    {
+      icon: svgPaths.p1c80b500,
+      label: "Facebook",
+      vb: "0 0 17.7778 17.7778",
+    },
+    {
+      icon: svgPaths.p1a6ed600,
+      label: "Instagram",
+      vb: "0 0 16 16",
+    },
+    {
+      icon: svgPaths.p816ba00,
+      label: "LinkedIn",
+      vb: "0 0 16 16",
+    },
+    {
+      icon: svgPaths.pad1dc00,
+      label: "YouTube",
+      vb: "0 0 17.7904 12.4551",
+    },
+  ];
+
+  return (
+    <footer
+      id="contact"
+      className="relative w-full px-5 sm:px-14 py-16 overflow-hidden shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+    >
+      <div className="absolute inset-0">
+        <img
+          alt=""
+          className="footer-bg-img absolute left-0 object-cover"
+          src={imgHeader30}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black to-[rgba(102,102,102,0)]" />
+      </div>
+
+      <div className="relative z-10 max-w-none mx-auto flex flex-col gap-16">
+        <div className="flex flex-col sm:flex-row gap-10 justify-between">
+          <div className="flex flex-col gap-5 max-w-sm">
+            <div className="w-24 h-24 overflow-hidden">
+              <img
+                alt="Telegram QR code"
+                className="w-full h-full object-contain"
+                src={imgQrCode}
+              />
+            </div>
+
+            <p className="font-inter text-white text-sm leading-relaxed">
+              Scan to join our Telegram channel for bookings, menu updates, and
+              the latest promotions.
+            </p>
+
+            <div className="w-24 h-24 overflow-hidden">
+              <img
+                alt="QR code 2"
+                className="w-full h-full object-cover"
+                src={imgQrCode1}
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <p className="font-gloock text-white text-lg">Contact Us</p>
+
+            {socials.map((social, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-5 h-5 flex items-center justify-center">
+                  <svg fill="none" viewBox={social.vb} className="w-full h-full">
+                    <path
+                      clipRule="evenodd"
+                      d={social.icon}
+                      fill="white"
+                      fillRule="evenodd"
+                    />
+                  </svg>
+                </div>
+
+                <span className="footer-small-text text-white text-xs">
+                  {social.label}
+                </span>
               </div>
             ))}
           </div>
         </div>
-      </section>
+
+        <div className="border-t border-white w-full" />
+
+        <div className="footer-small-text flex flex-col sm:flex-row justify-between gap-4 text-[#d9fcdf] text-xs">
+          <p>© 2026 ONE MORE. All rights reserved.</p>
+
+          <div className="flex flex-wrap gap-5">
+            <span className="cursor-pointer hover:text-white transition-colors">
+              Privacy Policy
+            </span>
+            <span className="cursor-pointer hover:text-white transition-colors">
+              Terms of Service
+            </span>
+            <span className="cursor-pointer hover:text-white transition-colors">
+              Cookie Settings
+            </span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <div className="w-full flex flex-col items-stretch">
+      <Header />
+      <SignatureTitle />
+      <SignatureDish />
+      <BranchesTitle />
+      <BranchesContent />
+      <MenuSection />
+      <VenueSection />
+      <StatsSection />
+      <TestimonialsTitle />
+      <TestimonialsSection />
+      <FooterSection />
+      <Footer />
     </div>
   );
 }

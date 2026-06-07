@@ -1,10 +1,4 @@
-import { useState, useEffect } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { appConfig } from "../../config/appConfig";
-import { navRoutes } from "../router/routeConfig.tsx";
-import type { NavRoute } from "../router/routeConfig.tsx";
-import imgLogo from "../../assets/logo_white_color.png";
+import { Outlet } from "react-router-dom";
 import "./MainLayout.css";
 
 export default function MainLayout() {
@@ -219,6 +213,8 @@ export default function MainLayout() {
           </div>
         </div>
       </footer>
+    <div className="site-shell">
+      <Outlet />
     </div>
   );
 }
