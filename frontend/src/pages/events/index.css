@@ -1,18 +1,112 @@
-.page-shell {
-  min-height: calc(100vh - 96px);
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 72px 24px;
+/* =========================
+   Event Header
+========================= */
+
+.event-header {
+  min-height: 100vh;
 }
 
-.page-shell h1 {
-  margin: 0 0 18px;
-  font-size: clamp(2.5rem, 4vw, 3rem);
+.event-header-bg {
+  width: 100%;
+  height: 106%;
+  top: -3%;
 }
 
-.page-shell p {
-  margin: 0;
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: #3c3c3c;
+.event-header-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.28) 0%,
+    rgba(0, 0, 0, 0.42) 48%,
+    rgba(48, 70, 37, 0.55) 100%
+  );
+}
+
+/* =========================
+   Event Hero Content
+========================= */
+
+.event-hero-content {
+  position: relative;
+  z-index: 10;
+  min-height: calc(100vh - 120px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 24px 96px;
+  text-align: center;
+}
+
+.event-hero-title {
+  margin: 0 0 32px;
+  color: #fafaf9;
+  font-family: "Gloock", serif;
+  font-size: clamp(44px, 6vw, 76px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.event-hero-text {
+  max-width: 720px;
+  margin: 0 0 24px;
+  color: #fbfbfb;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.event-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* The green block under the hero, like your screenshot */
+.event-green-section {
+  min-height: 120px;
+  background-color: #304625;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1023px) {
+  .event-header {
+    min-height: 100svh;
+  }
+
+  .event-header-bg {
+    height: 100%;
+    top: 0;
+  }
+
+  .event-hero-content {
+    min-height: calc(100svh - 96px);
+    padding: 72px 24px 96px;
+  }
+
+  .event-hero-title {
+    font-size: clamp(40px, 11vw, 64px);
+  }
+
+  .event-hero-text {
+    max-width: 340px;
+    font-size: 14px;
+  }
+
+  .event-hero-actions {
+    width: 100%;
+  }
+
+  .event-hero-actions .home-primary-button,
+  .event-hero-actions .home-outline-button {
+    width: 100%;
+    max-width: 190px;
+    justify-content: center;
+    text-align: center;
+  }
 }

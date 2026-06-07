@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import ScrollDownButton from "../../components/ui/ScrollDownButton";
 import svgPaths from "../../assets/svgPaths";
+import SiteNav from "../../app/layouts/SiteNav";
 
 import {
   companies,
@@ -17,14 +18,6 @@ import {
 
 import { homeAssets } from "./homeAsset";
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "../../components/ui/navigation-menu";
 
 const {
   imgHeader30,
@@ -69,7 +62,6 @@ function QuoteIcon({ d }: { d: string }) {
 }
 
 function Header() {
-
   return (
     <header className="home-header relative w-full overflow-hidden shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
       <div className="absolute inset-0">
@@ -81,162 +73,7 @@ function Header() {
         <div className="home-header-overlay absolute inset-0" />
       </div>
 
-      <nav className="home-nav relative z-[1000] flex items-center justify-between px-5 sm:px-10 pt-6 pb-4">
-        <img
-          alt="One More Restaurant"
-          className="h-10 sm:h-14 lg:h-[72px] w-auto object-contain flex-shrink-0"
-          src={imgLogo}
-        />
-
-        {/* Desktop nav */}
-        <NavigationMenu
-          viewport={false}
-          className="home-desktop-navigation hidden lg:flex"
-        >
-          <NavigationMenuList className="home-desktop-nav-list">
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <a href="#menu" className="home-nav-link">
-                  Menu
-                </a>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem className="relative">
-              <NavigationMenuTrigger
-              className="
-                !h-auto !min-h-0 !w-auto !min-w-0
-                !bg-transparent !p-0 !m-0
-                !rounded-none !border-0 !shadow-none
-                !text-[#fafaf9] !text-[18px] !font-light !leading-normal
-                hover:!bg-transparent hover:!text-[#8bb974]
-                focus:!bg-transparent focus:!text-[#8bb974]
-                data-[state=open]:!bg-transparent data-[state=open]:!text-[#8bb974]
-                [&>svg]:!hidden
-              "
-            >
-              Event
-            </NavigationMenuTrigger>
-
-              <NavigationMenuContent className="home-event-menu-content">
-                <div className="home-event-menu-list">
-                  <NavigationMenuLink asChild>
-                    <Link to="/events" className="home-event-menu-link">
-                      Room Booking
-                    </Link>
-                  </NavigationMenuLink>
-
-                  <NavigationMenuLink asChild>
-                    <Link to="/services" className="home-event-menu-link">
-                      Services
-                    </Link>
-                  </NavigationMenuLink>
-                </div>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <a href="#branches" className="home-nav-link">
-                  Branches
-                </a>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link to="/aboutus" className="home-nav-link">
-                  About Us
-                </Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <a href="#gallery" className="home-nav-link">
-                  Gallery
-                </a>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <a href="#contact" className="home-nav-link">
-                  Contact
-                </a>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
-
-        {/* Desktop reservation button */}
-        <Button
-          asChild
-          variant="outline"
-          className="home-reservation-link hidden lg:inline-flex"
-        >
-          <Link to="/reservation">Reservation</Link>
-        </Button>
-
-        {/* Mobile / tablet hamburger */}
-        <div className="home-mobile-nav-wrapper">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="home-mobile-menu-button"
-            aria-label="Open navigation menu"
-          >
-            <span className="home-mobile-menu-icon">
-              <span />
-              <span />
-              <span />
-            </span>
-          </Button>
-
-          <div className="home-mobile-menu">
-            <a href="#menu" className="home-mobile-link">
-              Menu
-            </a>
-
-            <div className="home-mobile-event-wrapper">
-              <button type="button" className="home-mobile-event-button">
-                Event
-              </button>
-
-              <div className="home-mobile-subgroup">
-                <Link to="/events" className="home-mobile-sublink">
-                  Room Booking
-                </Link>
-
-                <Link to="/services" className="home-mobile-sublink">
-                  Services
-                </Link>
-              </div>
-            </div>
-
-            <a href="#branches" className="home-mobile-link">
-              Branches
-            </a>
-
-            <Link to="/aboutus" className="home-mobile-link">
-              About Us
-            </Link>
-
-            <a href="#gallery" className="home-mobile-link">
-              Gallery
-            </a>
-
-            <a href="#contact" className="home-mobile-link">
-              Contact
-            </a>
-
-            <Button asChild variant="outline" className="home-mobile-reservation-link">
-              <Link to="/reservation">Reservation</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <SiteNav logo={imgLogo} />
 
       <div className="home-hero-content relative z-10 flex flex-col items-start px-5 sm:px-16 pt-16 sm:pt-24 pb-20 sm:pb-32">
         <h1 className="home-hero-title text-[#fafaf9] text-4xl sm:text-5xl lg:text-[71px] leading-none text-left mb-6">

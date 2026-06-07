@@ -1,0 +1,374 @@
+/* =========================
+   Desktop navigation
+========================= */
+
+.home-nav-link {
+  color: #fafaf9;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: normal;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  appearance: none;
+}
+
+.home-nav-link:hover {
+  color: #8bb974;
+}
+
+.home-reservation-link {
+  background-color: transparent !important;
+  border: 3px solid #6b9158 !important;
+  color: #8bb974 !important;
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.home-reservation-link:hover {
+  background-color: #6b9158 !important;
+  color: white !important;
+}
+
+/* =========================
+   Mobile / tablet navigation
+========================= */
+
+.home-mobile-nav-wrapper {
+  position: relative;
+  display: none;
+  align-items: center;
+}
+
+.home-mobile-menu-button {
+  background-color: rgba(48, 70, 37, 0.6) !important;
+  border: 1px solid rgba(139, 185, 116, 0.45) !important;
+  color: #fafaf9 !important;
+  border-radius: 999px;
+  transition:
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.home-mobile-menu-button:hover,
+.home-mobile-nav-wrapper:hover .home-mobile-menu-button,
+.home-mobile-nav-wrapper:focus-within .home-mobile-menu-button {
+  background-color: rgba(107, 145, 88, 0.55) !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 18px rgba(250, 215, 149, 0.18);
+}
+
+.home-mobile-menu-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-mobile-menu-icon span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background-color: #fafaf9;
+  border-radius: 999px;
+}
+
+.home-mobile-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  left: auto;
+  width: 210px;
+  z-index: 1002;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  padding: 22px 12px;
+  border-radius: 18px;
+
+  background: rgba(48, 70, 37, 0.58);
+  border: 1px solid rgba(204, 233, 190, 0.28);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(18px) translateY(-8px) scale(0.96);
+  transform-origin: top right;
+
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s ease,
+    transform 0.32s ease;
+}
+
+.home-mobile-nav-wrapper:hover .home-mobile-menu,
+.home-mobile-nav-wrapper:focus-within .home-mobile-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(0) translateY(0) scale(1);
+}
+
+.home-mobile-link {
+  display: block;
+  padding: 12px 14px;
+  color: #fafaf9;
+  font-size: 15px;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.home-mobile-link:hover {
+  color: #fad795;
+  background-color: rgba(139, 185, 116, 0.18);
+  box-shadow: inset 0 0 18px rgba(250, 215, 149, 0.18);
+}
+
+.home-mobile-event-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-mobile-event-button {
+  width: 100%;
+  display: block;
+  padding: 10px 12px;
+  color: #fafaf9;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.home-mobile-event-button:hover {
+  color: #fad795;
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 18px rgba(250, 215, 149, 0.12);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.home-mobile-subgroup {
+  margin-left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  overflow: hidden;
+  pointer-events: none;
+
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    margin-top 0.25s ease;
+}
+
+.home-mobile-event-wrapper:hover .home-mobile-subgroup,
+.home-mobile-event-wrapper:focus-within .home-mobile-subgroup {
+  margin-top: 6px;
+  max-height: 120px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.home-mobile-sublink {
+  display: block;
+  padding: 9px 12px;
+  color: #fafaf9;
+  font-size: 13px;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.home-mobile-sublink:hover {
+  color: #fad795;
+  background-color: rgba(139, 185, 116, 0.22);
+  box-shadow: inset 0 0 18px rgba(250, 215, 149, 0.2);
+}
+
+.home-mobile-reservation-link {
+  margin-top: 10px;
+  width: 100%;
+  background-color: transparent !important;
+  border: 1px solid #6b9158 !important;
+  color: #8bb974 !important;
+  font-size: 14px;
+  border-radius: 999px;
+}
+
+.home-mobile-reservation-link:hover {
+  background-color: #6b9158 !important;
+  color: white !important;
+}
+
+/* =========================
+   Shadcn desktop navigation
+========================= */
+
+.home-desktop-nav-list {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 32px !important;
+  background: transparent !important;
+}
+
+.home-desktop-navigation {
+  max-width: none !important;
+  flex: 0 1 auto !important;
+}
+
+.home-desktop-navigation button,
+.home-desktop-navigation a {
+  font-family: "Inter", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 300 !important;
+  line-height: normal !important;
+}
+
+.home-nav-trigger {
+  height: auto !important;
+  min-height: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: transparent !important;
+  color: #fafaf9 !important;
+
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  font-family: "Inter", sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 300 !important;
+  line-height: normal !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  cursor: pointer;
+  appearance: none;
+  transition: color 0.2s ease;
+}
+
+.home-nav-trigger:hover,
+.home-nav-trigger:focus,
+.home-nav-trigger[data-state="open"] {
+  background: transparent !important;
+  color: #8bb974 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.home-nav-trigger svg {
+  display: none !important;
+}
+
+.home-event-menu-content {
+  position: absolute !important;
+  top: calc(100% + 12px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+
+  width: 210px !important;
+  min-width: 210px !important;
+
+  padding: 0 !important;
+  overflow: hidden !important;
+
+  background: rgba(48, 70, 37, 0.72) !important;
+  border: 1px solid rgba(204, 233, 190, 0.28) !important;
+  border-radius: 18px !important;
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.38) !important;
+
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+}
+
+.home-event-menu-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 4px;
+}
+
+.home-event-menu-link {
+  display: block;
+  width: 100%;
+
+  padding: 13px 14px;
+  border-radius: 12px;
+
+  color: #fafaf9;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.home-event-menu-link:hover,
+.home-event-menu-link:focus {
+  color: #fad795;
+  background-color: rgba(139, 185, 116, 0.22);
+  box-shadow: inset 0 0 18px rgba(250, 215, 149, 0.18);
+  outline: none;
+}
+
+@media (max-width: 1023px) {
+  .home-mobile-nav-wrapper {
+    display: flex;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-mobile-nav-wrapper {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .home-mobile-menu {
+    width: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-mobile-menu {
+    width: 205px;
+    padding: 22px 12px;
+  }
+}
