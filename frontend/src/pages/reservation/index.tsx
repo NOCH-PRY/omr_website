@@ -3,17 +3,17 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useNavigate, useLocation } from "react-router-dom";
-import { 
-  CheckCircle2, 
-  AlertTriangle, 
-  Menu, 
-  ChevronLeft, 
-  ChevronRight 
+import {
+  CheckCircle2,
+  AlertTriangle,
+  Menu,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { useReservationStore } from "../../store/reservationStore";
 import { appConfig } from "../../config/appConfig";
 import imgHeader30 from "../../assets/omr_bk_night.jpg";
-import imgLogoCircle from "../../assets/omr_logo.png";
+import imgLogo from "../../assets/logo_white_color.png";
 import { toast } from "sonner";
 import "./index.css";
 
@@ -27,7 +27,7 @@ const reservationSchema = z.object({
     return selectedDate >= today;
   }, "Reservation date cannot be in the past"),
   timeSlot: z.string().min(1, "Please select a dining time"),
-  guests: z.number().min(1, "Must have at least 1 guest").max(10, "Reservations are capped at 10 guests online"),
+  guests: z.number().min(1, "Must have at least 1 guest").max(50, "Reservations are capped at 50 guests online"),
   diningArea: z.string().min(1, "Please select a dining area"),
   customerName: z.string().min(2, "Name must be at least 2 characters long"),
   customerPhone: z.string().min(8, "Phone number must be at least 8 digits").regex(/^\+?[0-9\s-]{8,15}$/, "Please enter a valid phone number"),
@@ -121,7 +121,7 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (dateTim
           <ChevronLeft size={18} />
         </button>
         <div className="flex gap-1.5 items-center">
-          <select 
+          <select
             value={currentMonth}
             onChange={(e) => setCurrentMonth(parseInt(e.target.value))}
             className="text-xs sm:text-sm font-semibold text-stone-700 bg-transparent border-none outline-none cursor-pointer focus:ring-0 focus:outline-none py-0.5"
@@ -130,7 +130,7 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (dateTim
               <option key={m} value={idx}>{m}</option>
             ))}
           </select>
-          <select 
+          <select
             value={currentYear}
             onChange={(e) => setCurrentYear(parseInt(e.target.value))}
             className="text-xs sm:text-sm font-semibold text-stone-700 bg-transparent border-none outline-none cursor-pointer focus:ring-0 focus:outline-none py-0.5"
@@ -172,11 +172,10 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (dateTim
               key={day}
               type="button"
               onClick={() => handleDaySelect(day)}
-              className={`w-7.5 h-7.5 mx-auto rounded-full flex items-center justify-center transition-all ${
-                isSelected 
-                  ? "bg-stone-900 text-white font-bold scale-105" 
+              className={`w-7.5 h-7.5 mx-auto rounded-full flex items-center justify-center transition-all ${isSelected
+                  ? "bg-stone-900 text-white font-bold scale-105"
                   : "hover:bg-stone-100 text-stone-700 font-light"
-              }`}
+                }`}
             >
               {day}
             </button>
@@ -223,22 +222,20 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (dateTim
               <button
                 type="button"
                 onClick={() => handlePeriodChange("AM")}
-                className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all ${
-                  period === "AM"
+                className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all ${period === "AM"
                     ? "bg-stone-900 text-white"
                     : "bg-stone-100 text-stone-700 hover:bg-stone-200"
-                }`}
+                  }`}
               >
                 AM
               </button>
               <button
                 type="button"
                 onClick={() => handlePeriodChange("PM")}
-                className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all ${
-                  period === "PM"
+                className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all ${period === "PM"
                     ? "bg-stone-900 text-white"
                     : "bg-stone-100 text-stone-700 hover:bg-stone-200"
-                }`}
+                  }`}
               >
                 PM
               </button>
@@ -253,14 +250,14 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (dateTim
 export default function ReservationPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  
-  const { 
-    isSubmitting, 
-    submitError, 
-    submitSuccess, 
-    setBookingDetails, 
-    submitReservation, 
-    resetBooking 
+
+  const {
+    isSubmitting,
+    submitError,
+    submitSuccess,
+    setBookingDetails,
+    submitReservation,
+    resetBooking
   } = useReservationStore();
 
   const initialBranch = location.state?.branch === "BKK1" ? "BKK1" : "Toul Kork";
@@ -287,14 +284,9 @@ export default function ReservationPage() {
     }
   });
 
-  const watchGuests = watch("guests") ?? 2;
+  const watchGuests = isNaN(watch("guests")) ? 1 : (watch("guests") ?? 2);
 
-  const handleBranchToggle = () => {
-    const nextBranch = selectedBranch === "Toul Kork" ? "BKK1" : "Toul Kork";
-    setSelectedBranch(nextBranch);
-    setValue("branchId", nextBranch === "Toul Kork" ? "1" : "2");
-    toast.success(`Switched branch to: ${nextBranch === "Toul Kork" ? "Toul Kork" : "Boeung Keng Kang 1"}`);
-  };
+
 
   const onSubmit = async (data: ReservationFormData) => {
     let backendArea = data.diningArea;
@@ -332,8 +324,8 @@ export default function ReservationPage() {
   };
 
   return (
-    <div 
-      className="relative min-h-screen w-full flex flex-col items-center justify-start pb-16 bg-cover bg-center overflow-x-hidden" 
+    <div
+      className="relative min-h-screen w-full flex flex-col items-center justify-start pb-16 bg-cover bg-center overflow-x-hidden"
       style={{ backgroundImage: `url(${imgHeader30})`, backgroundAttachment: "fixed" }}
     >
       {/* Dark translucent blur background overlay */}
@@ -341,38 +333,31 @@ export default function ReservationPage() {
 
       {/* HEADER SECTION */}
       <header className="relative z-10 w-full max-w-7xl px-5 sm:px-10 h-20 flex items-center justify-between border-b border-white/10 mb-8 sm:mb-12">
-        <button 
-          onClick={() => navigate("/")} 
-          className="p-1 text-white hover:text-brand-gold transition-colors focus:outline-none"
+        <div className="h-10 sm:h-12 cursor-pointer transition-transform hover:scale-105" onClick={() => navigate("/")}>
+          <img src={imgLogo} alt="One More Restaurant" className="h-full w-auto object-contain" />
+        </div>
+
+        <button
+          onClick={() => navigate("/")}
+          className="p-1 text-white hover:text-brand-gold transition-colors focus:outline-none cursor-pointer"
           aria-label="Home"
         >
           <Menu size={28} />
-        </button>
-
-        <div className="w-12 h-12 cursor-pointer transition-transform hover:scale-105" onClick={() => navigate("/")}>
-          <img src={imgLogoCircle} alt="One More Logo" className="w-full h-full object-contain" />
-        </div>
-
-        <button 
-          onClick={handleBranchToggle}
-          className="px-5 py-2.5 rounded-full bg-[#4f6f3b] text-white hover:bg-[#3f5c2c] text-xs font-semibold tracking-wide transition-all shadow-md active:scale-95 cursor-pointer"
-        >
-          Other Branch
         </button>
       </header>
 
       {/* MAIN CONTAINER */}
       <main className="relative z-10 w-full max-w-2xl px-4 flex flex-col items-center">
-        
+
         {/* Glassmorphic Panel Card */}
         <div className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-[36px] shadow-2xl p-6 sm:p-10 text-center flex flex-col items-center gap-6">
-          
+
           {/* Reservation Header Title */}
           <div className="flex flex-col items-center">
-            <h1 
+            <h1
               className="text-white text-3xl sm:text-4.5xl font-serif tracking-wide relative pb-2 select-none border-b-2 border-white/30"
               style={{ fontFamily: "'Philosopher', serif", color: "#ffffff" }}
-            >   
+            >
               Reservation
             </h1>
           </div>
@@ -395,8 +380,8 @@ export default function ReservationPage() {
               <p className="text-stone-300 font-light max-w-sm mb-6 leading-relaxed text-sm">
                 Your reservation request for {selectedBranch} Branch has been logged. Our host will review your details and contact you via phone/Telegram shortly to confirm.
               </p>
-              <button 
-                onClick={resetBooking} 
+              <button
+                onClick={resetBooking}
                 className="px-8 py-3 rounded-full bg-[#426232] hover:bg-[#304625] text-white text-sm font-semibold transition-colors shadow-lg cursor-pointer"
               >
                 Book Another Table
@@ -404,7 +389,7 @@ export default function ReservationPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6 flex flex-col items-stretch text-left">
-              
+
               {submitError && (
                 <div className="flex items-center gap-3 bg-red-950/60 border border-red-500/30 text-red-200 p-4 rounded-2xl text-xs">
                   <AlertTriangle className="shrink-0 text-red-400" size={16} />
@@ -428,22 +413,22 @@ export default function ReservationPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-white/95 tracking-wide">Full name:</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="e.g: Soun Nith"
                     {...register("customerName")}
-                    className="w-full bg-white text-stone-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#8bb974] focus:border-transparent transition-all border border-stone-200 font-light shadow-sm" 
+                    className="w-full bg-white text-stone-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#8bb974] focus:border-transparent transition-all border border-stone-200 font-light shadow-sm"
                   />
                   {errors.customerName && <p className="text-red-300 text-[10px] mt-0.5">{errors.customerName.message}</p>}
                 </div>
 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-white/95 tracking-wide">Phone number (Telegram)</label>
-                  <input 
-                    type="tel" 
+                  <input
+                    type="tel"
                     placeholder="01x xxx xxx"
                     {...register("customerPhone")}
-                    className="w-full bg-white text-stone-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#8bb974] focus:border-transparent transition-all border border-stone-200 font-light shadow-sm" 
+                    className="w-full bg-white text-stone-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#8bb974] focus:border-transparent transition-all border border-stone-200 font-light shadow-sm"
                   />
                   {errors.customerPhone && <p className="text-red-300 text-[10px] mt-0.5">{errors.customerPhone.message}</p>}
                 </div>
@@ -451,34 +436,45 @@ export default function ReservationPage() {
 
               {/* Guests and Table selections */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 items-end">
-                {/* Number of Guest Slider */}
+                {/* Number of Guest Counter Input */}
                 <div className="flex flex-col gap-1.5 font-light">
                   <label className="text-xs font-semibold text-white/95 tracking-wide">Number of guest</label>
-                  <div className="relative pt-6 flex flex-col gap-1">
-                    {/* Floating Bubble over the range thumb */}
-                    <div 
-                      className="absolute bottom-full mb-1 bg-[#426232] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-md pointer-events-none select-none transition-all duration-75"
-                      style={{ 
-                        left: `calc(${((watchGuests - 1) / 9) * 100}% - ${(((watchGuests - 1) / 9) * 18) - 9}px)`,
-                        transform: "translateX(-50%)"
+                  <div className="flex items-center justify-between bg-white rounded-xl border border-stone-200 shadow-sm h-[42px] px-2 w-full">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const current = watchGuests;
+                        if (current > 1) {
+                          setValue("guests", current - 1);
+                        }
                       }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors font-bold text-lg cursor-pointer"
                     >
-                      {watchGuests}
-                      {/* Triangle pointer at the bottom of the bubble */}
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#426232]" />
-                    </div>
-
-                    <input 
-                      type="range" 
-                      min="1" 
-                      max="10" 
-                      {...register("guests", { valueAsNumber: true })}
-                      className="w-full h-1.5 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#426232] select-none slider-thumb"
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      min="1"
+                      max="50"
+                      {...register("guests", {
+                        valueAsNumber: true,
+                        min: { value: 1, message: "Must have at least 1 guest" },
+                        max: { value: 50, message: "Reservations are capped at 50 guests online" }
+                      })}
+                      className="w-full text-center bg-transparent border-none text-stone-800 font-semibold focus:outline-none focus:ring-0 text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
-                    <div className="flex justify-between text-[10px] text-white/80 select-none font-light">
-                      <span>1</span>
-                      <span>10</span>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const current = watchGuests;
+                        if (current < 50) {
+                          setValue("guests", current + 1);
+                        }
+                      }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors font-bold text-lg cursor-pointer"
+                    >
+                      +
+                    </button>
                   </div>
                   {errors.guests && <p className="text-red-300 text-[10px] mt-0.5">{errors.guests.message}</p>}
                 </div>
@@ -502,9 +498,43 @@ export default function ReservationPage() {
                 </div>
               </div>
 
-              {/* Info about the pre-selected branch */}
-              <div className="text-center sm:text-left text-[11px] text-stone-300 select-none bg-white/5 py-2 px-4 rounded-xl border border-white/5 self-center sm:self-auto w-fit">
-                Branch: <span className="text-white font-semibold">{selectedBranch === "Toul Kork" ? "One More Toul Kork" : "One More Boeung Keng Kang 1"}</span>
+              {/* Branch Selector near submit button */}
+              <div className="flex flex-col gap-1.5 self-center sm:self-auto w-full sm:w-auto">
+                <p className="text-xs font-semibold text-stone-300 select-none text-center sm:text-left">Branch Selection:</p>
+                <div className="flex p-1 bg-white/5 rounded-full border border-white/15 w-full sm:w-fit self-center sm:self-start">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedBranch !== "Toul Kork") {
+                        setSelectedBranch("Toul Kork");
+                        setValue("branchId", "1");
+                        toast.success("Switched branch to: One More Toul Kork");
+                      }
+                    }}
+                    className={`flex-1 sm:flex-initial px-5 py-2 text-xs font-semibold rounded-full transition-all cursor-pointer ${selectedBranch === "Toul Kork"
+                        ? "bg-white text-stone-900 shadow-md"
+                        : "text-white/80 hover:text-white hover:bg-white/5"
+                      }`}
+                  >
+                    Toul Kork
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (selectedBranch !== "BKK1") {
+                        setSelectedBranch("BKK1");
+                        setValue("branchId", "2");
+                        toast.success("Switched branch to: One More Boeung Keng Kang 1");
+                      }
+                    }}
+                    className={`flex-1 sm:flex-initial px-5 py-2 text-xs font-semibold rounded-full transition-all cursor-pointer ${selectedBranch === "BKK1"
+                        ? "bg-white text-stone-900 shadow-md"
+                        : "text-white/80 hover:text-white hover:bg-white/5"
+                      }`}
+                  >
+                    Boeung Keng Kang 1
+                  </button>
+                </div>
               </div>
 
               {/* Submit Button */}
@@ -519,9 +549,9 @@ export default function ReservationPage() {
           )}
 
           {/* Skip the wait Link */}
-          <a 
-            href="/menu" 
-            onClick={(e) => { e.preventDefault(); navigate("/menu"); }} 
+          <a
+            href="/menu"
+            onClick={(e) => { e.preventDefault(); navigate("/menu"); }}
             className="text-xs text-white underline select-none font-light hover:text-brand-gold transition-colors tracking-wide cursor-pointer"
           >
             Skip the wait. Pre-order now!
