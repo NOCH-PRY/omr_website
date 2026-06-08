@@ -3,39 +3,94 @@
 ========================= */
 
 .home-nav-link {
-  color: #fafaf9;
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font-size: 18px;
-  font-weight: 300;
-  line-height: normal;
-  text-decoration: none;
+  color: #fafaf9 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 150 !important;
+  line-height: normal !important;
+  text-decoration: none !important;
   cursor: pointer;
   transition: color 0.2s ease;
   appearance: none;
 }
 
-.home-nav-link:hover {
-  color: #8bb974;
-}
-
-.home-reservation-link {
-  background-color: transparent !important;
-  border: 3px solid #6b9158 !important;
+.home-nav-link:hover,
+.home-nav-link:focus {
   color: #8bb974 !important;
-  font-size: 16px;
-  padding: 8px 16px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
+  background: transparent !important;
+  outline: none !important;
 }
 
-.home-reservation-link:hover {
-  background-color: #6b9158 !important;
-  color: white !important;
+/* =========================
+   Shadcn desktop navigation
+========================= */
+
+.home-desktop-navigation {
+  max-width: none !important;
+  flex: 0 1 auto !important;
+}
+
+.home-desktop-nav-list {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 45px !important;
+  background: transparent !important;
+}
+
+.home-desktop-navigation button,
+.home-desktop-navigation a,
+.home-desktop-navigation [data-slot="navigation-menu-trigger"],
+.home-desktop-navigation [data-slot="navigation-menu-link"] {
+  font-family: "Inter", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 150 !important;
+  line-height: normal !important;
+}
+
+.home-nav-trigger {
+  height: auto !important;
+  min-height: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  background: transparent !important;
+  color: #fafaf9 !important;
+
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  cursor: pointer;
+  appearance: none;
+  transition: color 0.2s ease;
+}
+
+.home-nav-trigger:hover,
+.home-nav-trigger:focus,
+.home-nav-trigger[data-state="open"],
+.home-desktop-navigation [data-slot="navigation-menu-trigger"]:hover,
+.home-desktop-navigation [data-slot="navigation-menu-trigger"]:focus,
+.home-desktop-navigation [data-slot="navigation-menu-trigger"][data-state="open"] {
+  background: transparent !important;
+  color: #8bb974 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.home-nav-trigger svg {
+  display: none !important;
 }
 
 /* =========================
@@ -233,7 +288,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 32px !important;
+  gap: 35px !important;
   background: transparent !important;
 }
 
@@ -245,8 +300,8 @@
 .home-desktop-navigation button,
 .home-desktop-navigation a {
   font-family: "Inter", sans-serif !important;
-  font-size: 18px !important;
-  font-weight: 300 !important;
+  font-size: 12px !important;
+  font-weight: 100 !important;
   line-height: normal !important;
 }
 
@@ -267,8 +322,8 @@
   box-shadow: none !important;
 
   font-family: "Inter", sans-serif !important;
-  font-size: 18px !important;
-  font-weight: 300 !important;
+  font-size: 12px !important;
+  font-weight: 100 !important;
   line-height: normal !important;
 
   display: inline-flex !important;
@@ -299,8 +354,8 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
 
-  width: 210px !important;
-  min-width: 210px !important;
+  width: 200px !important;
+  min-width: 200px !important;
 
   padding: 0 !important;
   overflow: hidden !important;

@@ -22,11 +22,14 @@ export default function SiteNav({ logo, sectionPrefix = "" }: SiteNavProps) {
 
   return (
     <nav className="home-nav relative z-[1000] flex items-center justify-between px-5 sm:px-10 pt-6 pb-4">
-      <img
-        alt="One More Restaurant"
-        className="h-10 sm:h-14 lg:h-[72px] w-auto object-contain flex-shrink-0"
-        src={logo}
-      />
+      {/* Logo routes to homepage */}
+      <Link to="/" aria-label="Go to homepage">
+        <img
+          alt="One More Restaurant"
+          className="h-10 sm:h-14 lg:h-[72px] w-auto object-contain flex-shrink-0"
+          src={logo}
+        />
+      </Link>
 
       {/* Desktop nav */}
       <NavigationMenu
@@ -34,27 +37,17 @@ export default function SiteNav({ logo, sectionPrefix = "" }: SiteNavProps) {
         className="home-desktop-navigation hidden lg:flex"
       >
         <NavigationMenuList className="home-desktop-nav-list">
+          {/* Menu routes to Menu page */}
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <a href={sectionHref("menu")} className="home-nav-link">
+              <Link to="/menu" className="home-nav-link">
                 Menu
-              </a>
+              </Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
 
           <NavigationMenuItem className="relative">
-            <NavigationMenuTrigger
-              className="
-                !h-auto !min-h-0 !w-auto !min-w-0
-                !bg-transparent !p-0 !m-0
-                !rounded-none !border-0 !shadow-none
-                !text-[#fafaf9] !text-[18px] !font-light !leading-normal
-                hover:!bg-transparent hover:!text-[#8bb974]
-                focus:!bg-transparent focus:!text-[#8bb974]
-                data-[state=open]:!bg-transparent data-[state=open]:!text-[#8bb974]
-                [&>svg]:!hidden
-              "
-            >
+            <NavigationMenuTrigger className="home-nav-link home-nav-trigger">
               Event
             </NavigationMenuTrigger>
 
@@ -77,14 +70,6 @@ export default function SiteNav({ logo, sectionPrefix = "" }: SiteNavProps) {
 
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <a href={sectionHref("branches")} className="home-nav-link">
-                Branches
-              </a>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
               <Link to="/aboutus" className="home-nav-link">
                 About Us
               </Link>
@@ -101,7 +86,7 @@ export default function SiteNav({ logo, sectionPrefix = "" }: SiteNavProps) {
 
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <a href={sectionHref("contact")} className="home-nav-link">
+              <a href="#contact" className="home-nav-link">
                 Contact
               </a>
             </NavigationMenuLink>
@@ -135,9 +120,10 @@ export default function SiteNav({ logo, sectionPrefix = "" }: SiteNavProps) {
         </Button>
 
         <div className="home-mobile-menu">
-          <a href={sectionHref("menu")} className="home-mobile-link">
+          {/* Menu routes to Menu page */}
+          <Link to="/menu" className="home-mobile-link">
             Menu
-          </a>
+          </Link>
 
           <div className="home-mobile-event-wrapper">
             <button type="button" className="home-mobile-event-button">
@@ -155,10 +141,6 @@ export default function SiteNav({ logo, sectionPrefix = "" }: SiteNavProps) {
             </div>
           </div>
 
-          <a href={sectionHref("branches")} className="home-mobile-link">
-            Branches
-          </a>
-
           <Link to="/aboutus" className="home-mobile-link">
             About Us
           </Link>
@@ -167,7 +149,7 @@ export default function SiteNav({ logo, sectionPrefix = "" }: SiteNavProps) {
             Gallery
           </a>
 
-          <a href={sectionHref("contact")} className="home-mobile-link">
+          <a href="#contact" className="home-mobile-link">
             Contact
           </a>
 

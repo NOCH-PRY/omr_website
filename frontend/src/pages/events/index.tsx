@@ -6,6 +6,8 @@ import ScrollDownButton from "../../components/ui/ScrollDownButton";
 
 import { homeAssets } from "../home/homeAsset";
 import { eventAssets } from "./eventAsset";
+import SiteFooter from "../../app/layouts/SiteFooter";
+
 
 import "./index.css";
 
@@ -58,6 +60,7 @@ export default function EventsPage() {
       <section id="private-rooms" className="event-green-section">
         {/* next event section goes here */}
       </section>
+      <SiteFooter/>
     </div>
   );
 }

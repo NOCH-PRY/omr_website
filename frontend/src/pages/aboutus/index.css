@@ -1,0 +1,151 @@
+/* =========================
+   About Header
+========================= */
+
+.about-header {
+  min-height: 100vh;
+}
+
+.about-header-bg {
+  width: 100%;
+  height: 106%;
+  top: -3%;
+}
+
+.about-header-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.62) 48%,
+    rgba(48, 70, 37, 0.78) 100%
+  );
+}
+
+/* =========================
+   About Hero Content
+========================= */
+
+.about-hero-content {
+  position: relative;
+  z-index: 10;
+  min-height: calc(100vh - 120px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 24px 96px;
+  text-align: center;
+}
+
+.about-hero-title {
+  margin: 0 0 32px;
+  color: #fafaf9;
+  font-family: "Gloock", serif;
+  font-size: clamp(44px, 6vw, 76px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.about-hero-text {
+  max-width: 720px;
+  margin: 0 0 24px;
+  color: #fbfbfb;
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.about-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* =========================
+   About Hero Buttons
+========================= */
+
+.about-primary-button {
+  background-color: #8bb974 !important;
+  color: white !important;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  border: none;
+}
+
+.about-primary-button:hover {
+  background-color: #6b9158 !important;
+}
+
+.about-outline-button {
+  background-color: transparent !important;
+  border: 2px solid #cce9be !important;
+  color: #8bb974 !important;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+}
+
+.about-outline-button:hover {
+  background-color: rgba(204, 233, 190, 0.2) !important;
+  color: #8bb974 !important;
+}
+
+/* Green block under hero */
+.about-green-section {
+  min-height: 120px;
+  background-color: #304625;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1023px) {
+  .about-header {
+    min-height: 100svh;
+  }
+
+  .about-header-bg {
+    height: 100%;
+    top: 0;
+  }
+
+  .about-hero-content {
+    min-height: calc(100svh - 96px);
+    padding: 72px 24px 96px;
+  }
+
+  .about-hero-title {
+    font-size: clamp(40px, 11vw, 64px);
+  }
+
+  .about-hero-text {
+    max-width: 340px;
+    font-size: 14px;
+  }
+
+  .about-hero-actions {
+    width: 100%;
+  }
+
+  .about-primary-button,
+  .about-outline-button {
+    width: 100%;
+    max-width: 190px;
+    justify-content: center;
+    text-align: center;
+  }
+}
