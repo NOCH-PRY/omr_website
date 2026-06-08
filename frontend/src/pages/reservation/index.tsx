@@ -35,11 +35,14 @@ const reservationSchema = z.object({
 
 type ReservationFormData = z.infer<typeof reservationSchema>;
 
-// Custom Calendar Component to match screenshot exactly
-function CalendarWidget({ value, onChange }: { value: string; onChange: (date: string) => void }) {
+// Custom Calendar Component with integrated time selection
+function CalendarWidget({ value, onChange }: { value: string; onChange: (dateTime: string) => void }) {
   const today = new Date();
   const initialDate = value ? new Date(value) : today;
   const [selectedDate, setSelectedDate] = React.useState<Date>(initialDate);
+  const [hour, setHour] = React.useState<string>("12");
+  const [minute, setMinute] = React.useState<string>("00");
+  const [period, setPeriod] = React.useState<"AM" | "PM">("PM");
   const [currentMonth, setCurrentMonth] = React.useState<number>(initialDate.getMonth());
   const [currentYear, setCurrentYear] = React.useState<number>(initialDate.getFullYear());
 
@@ -70,11 +73,34 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (date: s
   const handleDaySelect = (day: number) => {
     const newDate = new Date(currentYear, currentMonth, day);
     setSelectedDate(newDate);
-    
-    const yyyy = newDate.getFullYear();
-    const mm = String(newDate.getMonth() + 1).padStart(2, "0");
-    const dd = String(newDate.getDate()).padStart(2, "0");
+  };
+
+  const updateDateTime = () => {
+    const yyyy = selectedDate.getFullYear();
+    const mm = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const dd = String(selectedDate.getDate()).padStart(2, "0");
     onChange(`${yyyy}-${mm}-${dd}`);
+  };
+
+  const handleHourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val === "" || (parseInt(val) >= 1 && parseInt(val) <= 12)) {
+      setHour(val || "1");
+      updateDateTime();
+    }
+  };
+
+  const handleMinuteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val === "" || (parseInt(val) >= 0 && parseInt(val) <= 59)) {
+      setMinute(val.padStart(2, "0") || "00");
+      updateDateTime();
+    }
+  };
+
+  const handlePeriodChange = (newPeriod: "AM" | "PM") => {
+    setPeriod(newPeriod);
+    updateDateTime();
   };
 
   const days = [];
@@ -85,8 +111,11 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (date: s
     days.push(i);
   }
 
+  const isDateSelected = selectedDate.getMonth() === currentMonth && selectedDate.getFullYear() === currentYear;
+
   return (
     <div className="bg-white rounded-2xl p-5 shadow-lg border border-stone-200/50 w-full max-w-sm mx-auto text-stone-800">
+      {/* Calendar Header */}
       <div className="flex items-center justify-between mb-4 px-1">
         <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-stone-100 rounded-full transition-colors text-stone-600">
           <ChevronLeft size={18} />
@@ -116,6 +145,7 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (date: s
         </button>
       </div>
 
+      {/* Day Labels */}
       <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-stone-400 mb-2 uppercase tracking-wider">
         <span>Su</span>
         <span>Mo</span>
@@ -126,7 +156,8 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (date: s
         <span>Sa</span>
       </div>
 
-      <div className="grid grid-cols-7 gap-y-1 gap-x-1.5 text-center text-xs">
+      {/* Calendar Days */}
+      <div className="grid grid-cols-7 gap-y-1 gap-x-1.5 text-center text-xs mb-5">
         {days.map((day, idx) => {
           if (day === null) {
             return <div key={`empty-${idx}`} />;
@@ -152,6 +183,69 @@ function CalendarWidget({ value, onChange }: { value: string; onChange: (date: s
           );
         })}
       </div>
+
+      {/* Time Input */}
+      {isDateSelected && (
+        <div className="border-t border-stone-200 pt-4">
+          <p className="text-xs font-semibold text-stone-700 mb-3 text-center">Select dining time</p>
+          <div className="flex items-center justify-center gap-2">
+            {/* Hour Input */}
+            <div className="flex flex-col items-center">
+              <input
+                type="number"
+                min="1"
+                max="12"
+                value={hour}
+                onChange={handleHourChange}
+                className="w-12 px-2 py-2 text-center text-sm font-semibold text-stone-800 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900"
+              />
+              <span className="text-[10px] text-stone-500 mt-1">Hour</span>
+            </div>
+
+            {/* Separator */}
+            <span className="text-lg font-bold text-stone-700">:</span>
+
+            {/* Minute Input */}
+            <div className="flex flex-col items-center">
+              <input
+                type="number"
+                min="0"
+                max="59"
+                value={minute}
+                onChange={handleMinuteChange}
+                className="w-12 px-2 py-2 text-center text-sm font-semibold text-stone-800 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900"
+              />
+              <span className="text-[10px] text-stone-500 mt-1">Minute</span>
+            </div>
+
+            {/* AM/PM Toggle */}
+            <div className="flex gap-1 ml-2">
+              <button
+                type="button"
+                onClick={() => handlePeriodChange("AM")}
+                className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all ${
+                  period === "AM"
+                    ? "bg-stone-900 text-white"
+                    : "bg-stone-100 text-stone-700 hover:bg-stone-200"
+                }`}
+              >
+                AM
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePeriodChange("PM")}
+                className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all ${
+                  period === "PM"
+                    ? "bg-stone-900 text-white"
+                    : "bg-stone-100 text-stone-700 hover:bg-stone-200"
+                }`}
+              >
+                PM
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -277,8 +371,8 @@ export default function ReservationPage() {
           <div className="flex flex-col items-center">
             <h1 
               className="text-white text-3xl sm:text-4.5xl font-serif tracking-wide relative pb-2 select-none border-b-2 border-white/30"
-              style={{ fontFamily: "'Philosopher', serif" }}
-            >
+              style={{ fontFamily: "'Philosopher', serif", color: "#ffffff" }}
+            >   
               Reservation
             </h1>
           </div>
@@ -318,7 +412,7 @@ export default function ReservationPage() {
                 </div>
               )}
 
-              {/* Form Date Picker Calendar */}
+              {/* Form Date Picker Calendar with integrated time selection */}
               <div className="flex flex-col gap-1.5">
                 <Controller
                   name="date"
@@ -399,8 +493,6 @@ export default function ReservationPage() {
                     >
                       <option value="Indoor">Indoor</option>
                       <option value="Outdoor">Outdoor</option>
-                      <option value="VIP Room">VIP Room</option>
-                      <option value="VVIP Room">VVIP Room</option>
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-500">
                       ▼
